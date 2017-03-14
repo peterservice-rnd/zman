@@ -1,0 +1,133 @@
+<div class="modal fade" id="chooseServer" tabindex="-1" role="dialog"
+     aria-labelledby="chooseServerLabel">
+    <div class="modal-dialog modal-lg" role="document" style="width: 50%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="chooseServerLabel">ZooKeeper server aliases</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-5"
+                             style="padding-right:20px; border-right: 1px solid #ccc;">
+                            <select multiple class="form-control input-lg" style="height: 12em"
+                                    ng-model="aliasCtrl.selectedAliases"
+                                    ng-model-options="{ getterSetter: true }"
+                                    ng-options="alias.alias for alias in aliasCtrl.aliases()"></select>
+
+                            <p></p>
+
+                            <div class="btn-group pull-right" role="group">
+                                <button type="button" ng-click="aliasCtrl.refresh()"
+                                        class="btn btn-primary"
+                                        style="border-radius: 3px 0 0 3px">
+                                    <i class="fa fa-refresh"></i>
+                                    Refresh
+                                </button>
+                                <button type="button" data-toggle="modal"
+                                        data-target="#addServer" class="btn btn-primary"
+                                        style="border-radius: 3px 0 0 3px">
+                                    <i class="fa fa-plus"></i>
+                                    Add
+                                </button>
+                                <button type="button" data-toggle="modal"
+                                        data-target="#alias-deletion"
+                                        ng-disabled="!aliasCtrl.isSelected()"
+                                        class="btn btn-danger"
+                                        style="border-radius: 0 3px 3px 0">
+                                    <i class="fa fa-trash-o"></i>
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-7" style="padding-left: 20px">
+                            <h4 class="text-center" style="margin-top: -5px; margin-bottom: 15px">
+                                Editor
+                            </h4>
+
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <label for="inputAlias" class="col-sm-4 control-label text-right"
+                                           style="margin-right: -10px">
+                                        <strong>Alias</strong>
+                                    </label>
+
+                                    <div class="col-sm-8">
+                                        <input type="text"
+                                               ng-disabled="!aliasCtrl.isSelected()"
+                                               ng-model="aliasCtrl.getCurrentAlias().alias"
+                                               class="form-control" id="inputAlias"
+                                               value="Alias">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputConString" class="col-sm-4 control-label text-right"
+                                           style="margin-right: -10px">
+                                        <strong>Host:port</strong>
+                                    </label>
+
+                                    <div class="col-sm-8">
+                                        <input type="text"
+                                               ng-disabled="!aliasCtrl.isSelected()"
+                                               ng-model="aliasCtrl.getCurrentAlias().connectionString"
+                                               class="form-control" id="inputConString"
+                                               value="Connection string">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputUsername" class="col-sm-4 control-label text-right"
+                                           style="margin-right: -10px">
+                                        <strong>Username</strong>
+                                    </label>
+
+                                    <div class="col-sm-8">
+                                        <input type="text"
+                                               ng-disabled="!aliasCtrl.isSelected()"
+                                               ng-model="aliasCtrl.getCurrentAlias().login"
+                                               class="form-control" id="inputUsername"
+                                               value="Username">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputPassword" class="col-sm-4 control-label text-right"
+                                           style="margin-right: -10px">
+                                        <strong>Password</strong>
+                                    </label>
+
+                                    <div class="col-sm-8">
+                                        <input type="text"
+                                               ng-disabled="!aliasCtrl.isSelected()"
+                                               ng-model="aliasCtrl.getCurrentAlias().password"
+                                               class="form-control" id="inputPassword"
+                                               value="Password">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-12"
+                                         style="margin-left: -10px">
+                                        <button type="button" ng-click="aliasCtrl.update()"
+                                                ng-disabled="!aliasCtrl.isSelected()"
+                                                class="btn btn-primary pull-right"><i
+                                                class="fa fa-save"></i> Save
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" ng-click="aliasCtrl.connect()" data-dismiss="modal"
+                        class="btn btn-primary">
+                    Connect
+                </button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,47 @@
+<div class="modal fade" id="import" tabindex="-1"
+     role="dialog" aria-labelledby="Import">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Import Znodes into <span ng-bind="importCtrl.getNodeName()"></span></h4>
+            </div>
+            <div class="modal-body" align="center">
+                <div class="container-fluid">
+                    <div class="row-fluid">
+                        <div class="col-md-9">
+                            <div class="input-group" accept=".json, .xml" ngf-select ng-model="importCtrl.file"
+                                 name="file">
+                                <span class="form-control form-control-static"
+                                      data-ng-bind="importCtrl.file.name"></span>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type=button">
+                                        <i class="fa fa-cloud-upload"></i>
+                                        Select File
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="btn custom-checkbox"
+                                 data-ng-click="importCtrl.overwrite = !importCtrl.overwrite">
+                                <i class="fa fa-toggle-{{ importCtrl.overwrite ? 'on' : 'off' }}"></i>
+                                Overwrite
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    Close
+                </button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="importCtrl.submit()">
+                    Submit
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

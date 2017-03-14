@@ -1,0 +1,70 @@
+#!/bin/bash
+
+ZWORK_DIR=$(cd $(dirname $0) && cd ../ && pwd);
+ZWAR_NAME=zman.war
+ZPORT=8080
+cd $ZWORK_DIR;
+
+for i in "$@"
+do
+case $i in
+    -f|--foreground)
+    echo "Run in foreground" # need for docker
+    FOREGROUND=true
+    ;;
+    -p=*|--port=*)
+    echo "Use port "${i#*=}
+    ZPORT="${i#*=}"
+    ;;
+    start)
+    ACTION="start"
+    ;;
+    stop)
+    ACTION="stop"
+    ;;
+    *)
+    echo "Usage: zman <start|stop> [-p|--port]"
+    echo "    start -p=8888 - start zman on specified port (default 8080)"
+    echo "    stop  - stop running zman"
+    echo
+    ;;
+esac
+done
+
+RUN_LINE="java -jar $ZWORK_DIR/zman.war --server.port=$ZPORT > $ZWORK_DIR/log/zman.log 2>&1"
+
+function start {
+    if [[ "$(jps | grep zman.war)" ]]; then
+        echo "Already running"
+        exit
+    fi
+
+    if [ $FOREGROUND ]; then
+	    $RUN_LINE
+    else
+	    nohup $RUN_LINE &
+    fi
+    echo "Started"
+}
+
+function stop {
+    if [[ -z "$(jps | grep zman.war)" ]]; then
+        echo "Zman is not running" >&2
+        exit
+    fi
+    kill -9 `jps | grep zman.war | grep -oP '^\d+'` > /dev/null 2>&1
+    echo "Stopped"
+}
+
+case $ACTION in
+    start)
+    echo "start"
+    start
+    ;;
+    stop)
+    echo "stop"
+    stop
+    ;;
+    *)
+    ;;
+esac

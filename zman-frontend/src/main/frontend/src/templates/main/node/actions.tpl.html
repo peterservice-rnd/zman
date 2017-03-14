@@ -1,0 +1,45 @@
+<div class="row" style="margin-top: 15px">
+    <div class="col-md-12 text-center">
+        <ul class="list-inline file-main-menu"
+            style="margin-bottom: 0; margin-top: 5px">
+            <li>
+                <button type="button" ng-disabled="!nodeCtrl.isAliasSelected()"
+                        ng-click="nodeCtrl.forceRefresh()">
+                    <i class="fa fa-refresh"></i>
+                    Reload
+                </button>
+            </li>
+            <li>
+                <button type="button" data-toggle="modal"
+                        data-target="#createZnode"
+                        ng-disabled="!nodeCtrl.isNodeSelected()">
+                    <i class="fa fa-plus-square-o"></i>
+                    Create
+                </button>
+            </li>
+            <li>
+                <button type="button" data-toggle="modal"
+                        data-target="#node-deletion"
+                        ng-disabled="!nodeCtrl.isNodeSelected()"
+                        ng-click="nodeCtrl.delete()">
+                    <i class="fa fa-close"></i>
+                    Delete
+                </button>
+            </li>
+            <li>
+                <button type="button" data-toggle="modal" data-target="#import"
+                        ng-disabled="!nodeCtrl.isNodeSelected()">
+                    <i class="fa fa-cloud-upload"></i>
+                    Import
+                </button>
+            </li>
+            <li>
+                <button type="button" data-toggle="modal" data-target="#export"
+                        ng-disabled="!nodeCtrl.isNodeSelected()">
+                    <i class="fa fa-cloud-download"></i>
+                    Export
+                </button>
+            </li>
+        </ul>
+    </div>
+</div>

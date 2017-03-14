@@ -1,0 +1,118 @@
+.btn, .panel, .panel-heading, .panel-body, .panel-footer {
+  border-radius: 3px;
+}
+
+.custom-checkbox {
+  i.fa {
+    font-size: 17.5px;
+  }
+  cursor: pointer;
+  text-transform: lowercase;
+  border: 1px solid #cecece;
+}
+
+.toast {
+  cursor: default;
+  user-select: none;
+}
+
+.top-bar {
+  height: 1%;
+  width: 100%;
+}
+
+.wrapper {
+  display: flex;
+  flex-flow: column wrap;
+  align-items: stretch;
+  height: 100%;
+}
+
+app {
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.header, .content-wrapper, footer, main-menu, nodes {
+  display: flex;
+  width: 100%;
+}
+
+main-menu > div {
+  flex: 20 0;
+  align-items: center;
+  display: flex;
+}
+
+.content-wrapper {
+  padding: 0 30px;
+}
+
+footer {
+  justify-content: center;
+  min-height: 3.5vh;
+  align-items: center;
+  padding: 0 !important;
+}
+
+.content-wrapper, nodes {
+  flex: 20 0;
+  align-items: stretch;
+  flex-flow: column wrap;
+}
+
+nodes {
+  flex-flow: row;
+}
+
+.tree-container {
+  border-right: 1px solid #CCC;
+  padding-right: 10px;
+  flex: 1 0;
+  display: flex;
+  flex-flow: column;
+  align-items: stretch;
+}
+
+.main-content {
+  flex: 3 0;
+  padding-left: 25px;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+tree {
+  margin-top: 0;
+  border: none !important;
+  background: transparent !important;
+  overflow-y: auto;
+  height: 0;
+  flex: 1 1 auto;
+}
+
+node-edit {
+  display: flex;
+  flex: 2 1;
+  flex-flow: column;
+
+  & > h2 {
+    flex: 1 1;
+  }
+  & > #valueEditor {
+    flex: 15 0;
+    display: flex;
+    flex-flow: column;
+
+    & > select {
+      height: 40px;
+    }
+    & > #aceEditor {
+      flex: 15 0;
+    }
+  }
+  & > .panel-footer {
+    flex: 1 1;
+    max-height: 55px;
+  }
+}

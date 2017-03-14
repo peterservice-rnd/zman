@@ -1,0 +1,8 @@
+zman:
+  cache:
+    max-elements: 20
+    time-to-idle-seconds: 1800
+    eviction-delay-seconds: 60
+  curator:
+    retries: 2
+    sleep-time-between-retries-millis: 1000

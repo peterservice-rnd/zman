@@ -1,0 +1,43 @@
+#Android generated
+bin
+gen
+lint.xml
+
+#Eclipse
+.project
+.classpath
+.settings
+.checkstyle
+
+#IntelliJ IDEA
+.idea
+classes
+*.iml
+gen-external-apklibs
+out
+
+#Maven
+/target
+release.properties
+pom.xml.*
+
+#Other
+.DS_Store
+tmp
+*.log
+atlassian-ide-plugin.xml
+
+#ZMan
+alias-storage
+
+db/zk-alias-storage/*
+!db/zk-alias-storage/.gitkeep
+
+# Frontend
+src/main/web/frontend/public
+src/main/web/frontend/node
+src/main/web/frontend/etc
+src/main/web/frontend/node_modules
+src/main/web/frontend/bower_components
+
+db/

@@ -1,0 +1,11 @@
+<div class="input-group">
+    <input type="text" ng-model="nodeCtrl.searchFor" class="form-control">
+    <span class="input-group-btn">
+        <button
+            ng-disabled="!nodeCtrl.isAliasSelected()"
+            ng-click="nodeCtrl.selected = {id: null};nodeCtrl.find()"
+            class="btn btn-default" type="button">
+            Go
+        </button>
+    </span>
+</div>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+
+    <head>
+        <title>ZMan | ZooKeeper Manager</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="description" content="ZMan - ZooKeeper GUI">
+        <meta name="author" content="Egor Lepa egor.lepa@billing.ru">
+        <meta name="author" content="Kirill Saksin kirill.saksin@billing.ru">
+
+        <!-- CSS -->
+        <link href="/assets/dist/vendors.css" rel="stylesheet" type="text/css">
+        <link href="/assets/dist/sources.css" rel="stylesheet" type="text/css">
+
+        <!-- todo: favicon -->
+        <!--<link rel="shortcut icon" href="/assets/ico/favicon.png">-->
+
+    </head>
+
+    <body ng-app="app">
+
+        <app></app>
+
+        <script type="text/javascript" src="/assets/dist/vendors.js" charset="UTF-8"></script>
+        <script type="text/javascript" src="/assets/dist/sources.js" charset="UTF-8"></script>
+        <script type="text/javascript">
+        (function (angular) {
+            'use strict';
+            angular.module('appConfig')
+                .run(['configuration', function (config) {
+                    config.contextPath = '';
+                }])
+            ;
+        }(window.angular));
+        </script>
+
+    </body>
+
+</html>

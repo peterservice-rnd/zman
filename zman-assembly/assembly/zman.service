@@ -1,0 +1,12 @@
+[Unit]
+Description=Zookeeper web-client
+After=network.target
+
+[Service]
+Type=forking
+EnvironmentFile=-/etc/zman/config
+ExecStart=/opt/zman/bin/zman start
+ExecStop=/opt/zman/bin/zman stop
+
+[Install]
+WantedBy=multi-user.target

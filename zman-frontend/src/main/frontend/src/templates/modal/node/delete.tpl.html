@@ -1,0 +1,24 @@
+<div class="modal fade" id="node-deletion"
+     tabindex="-1" role="dialog" aria-labelledby="Delete">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body lead" align="center">
+                <div>
+                    Do you really want to delete <code ng-bind="deleteCtrl.getNodeName()"></code>?
+                </div>
+                <div ng-show="deleteCtrl.hasChildren()">
+                    <code data-ng-bind="deleteCtrl.getNodeName()"></code> has children.
+                    <strong>Node will be deleted recursively.</strong>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="deleteCtrl.delete()">
+                    Delete
+                </button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

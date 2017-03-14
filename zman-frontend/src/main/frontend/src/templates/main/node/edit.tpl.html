@@ -1,0 +1,22 @@
+<h2 style="border-bottom: 1px solid #ccc">
+    Edit
+    <span data-ng-bind="nodeCtrl.getEditNodeTitle()"></span>
+</h2>
+
+<div id="valueEditor" class="panel-body" style="padding: 0;">
+    <select class="form-control editor-mode" ng-model="editNodeCtrl.mode"
+            ng-options="m for m in editNodeCtrl.getModes()"
+            ng-change="editNodeCtrl.modeChanged()"></select>
+    <div id="aceEditor">
+        <div
+            ui-ace="editNodeCtrl.getOptions()"
+            ng-model="editNodeCtrl.model"
+            ng-model-options="{getterSetter: true}"></div>
+    </div>
+</div>
+<div class="panel-footer">
+    <button class="btn btn-primary" ng-click="nodeCtrl.save()">
+        <i class="fa fa-save"></i>
+        Save
+    </button>
+</div>

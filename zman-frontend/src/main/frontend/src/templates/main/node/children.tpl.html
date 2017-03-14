@@ -1,0 +1,50 @@
+<div ng-show="childCtrl.getChildren().length !== 0"
+     class="child-nodes">
+    <h2 style="margin-top: 0; border-bottom: 1px solid #ccc"
+        data-ng-bind="nodeCtrl.getNodeTitle()"></h2>
+
+    <div class="child-nodes-wrapper">
+        <table class="table table-hover table-centered table-header">
+            <thead>
+                <tr>
+                    <td style="font-size: 1.5em" class="col-xs-5">Child key</td>
+                    <td style="font-size: 1.5em" class="col-xs-5">Value</td>
+                    <td class="col-xs-2"></td>
+                </tr>
+            </thead>
+        </table>
+        <div class="table-body">
+            <table class="table table-hover table-centered">
+                <tbody>
+                    <tr data-ng-repeat="(id, child) in childCtrl.getChildren()"
+                        class="{{ childCtrl.getSelectedId() === id ? 'info' : '' }}">
+
+                        <td ng-click="childCtrl.selectChild(id, child)"
+                            ng-dblclick="childCtrl.goToChild(child)"
+                            data-ng-bind="child.znodeKey" class="col-xs-5"></td>
+
+                        <td ng-click="childCtrl.selectChild(id, child)"
+                            ng-dblclick="childCtrl.goToChild(child)"
+                            class="col-xs-5"
+                            data-ng-bind="child.znodeValue | limitWithDots:75"></td>
+
+                        <td class="col-xs-2 text-right node-actions">
+                            <button ng-click="childCtrl.selectChild(id, child)"
+                                    data-toggle="modal" data-target="#editZnode"
+                                    type="button" class="btn btn-link">
+                                <i class="fa fa-pencil"></i>
+                            </button>
+                            <button ng-click="childCtrl.deleteChild(id, child)"
+                                    data-toggle="modal"
+                                    data-target="#node-deletion" type="button"
+                                    class="btn btn-link danger">
+                                <i class="fa fa-trash-o"></i>
+                            </button>
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

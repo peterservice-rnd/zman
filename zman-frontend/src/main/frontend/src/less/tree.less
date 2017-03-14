@@ -1,0 +1,48 @@
+tree {
+  user-select: none;
+}
+
+[ui-tree-handle] {
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: normal;
+  display: flex;
+  flex-flow: row;
+  .node-icons {
+    padding: 5px 8px;
+  }
+  .node-path {
+    flex: 1 0;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.angular-ui-tree-node tree-node .selected {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+[ui-tree-handle] > i {
+  margin-right: 3px;
+}
+
+.angular-ui-tree > .angular-ui-tree-empty {
+  background: transparent;
+  border: none;
+}
+
+.angular-ui-tree-nodes .angular-ui-tree-nodes {
+  padding-left: 26px;
+}
+
+#tree-root {
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+}
+
+.angular-ui-tree-node, .angular-ui-tree-placeholder {
+  border-left: 1px dotted #c3c3c3;
+  border-top: 1px dotted #c3c3c3;
+  background: #f1f1f1;
+  box-sizing: border-box;
+}

@@ -1,0 +1,29 @@
+spring:
+  jpa:
+    hibernate.ddl-auto: update
+  datasource:
+    url: "jdbc:h2:file:./db/zk-storage/ZKStorage"
+  jackson:
+    serialization:
+      indent-output: true
+    deserialization:
+      fail-on-unknown-properties: false
+
+logging.level:
+  org.apache.zookeeper: WARN
+
+zman:
+  cache:
+    max-elements: 20
+    time-to-idle-seconds: 1800
+    eviction-delay-seconds: 60
+  curator:
+    retries: 2
+    sleep-time-between-retries-millis: 1000
+
+---
+
+spring:
+    profiles: dev
+frontend:
+  path: "zman-frontend/target/frontend"

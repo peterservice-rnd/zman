@@ -1,0 +1,42 @@
+@menuColor: #555;
+@menuDisabledColor: lighten(@menuColor, 50%);
+
+.file-main-menu > li {
+  button {
+    color: @menuColor;
+    border: none;
+    background: transparent;
+    outline: none;
+    padding: 0;
+    margin: 0;
+    &:disabled {
+      color: @menuDisabledColor;
+    }
+    &:not(:disabled):hover {
+      color: #337AB7;
+    }
+  }
+  i {
+    font-size: 34px;
+    text-align: center;
+  }
+  i, .fa-stack {
+    display: block;
+    margin: 0 auto 5px;
+  }
+}
+
+main-menu {
+  h2 {
+    &:first-of-type {
+      border-right: 1px solid #2c98c6;
+      padding-right: 10px;
+    }
+    &:last-of-type {
+      padding-left: 10px;
+    }
+  }
+  div {
+    margin-left: 1em;
+  }
+}

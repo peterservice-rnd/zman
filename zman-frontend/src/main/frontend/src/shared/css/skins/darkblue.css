@@ -1,0 +1,104 @@
+/*------------------------------------------------*/
+/*	Skin: Dark Blue
+/*------------------------------------------------*/
+/* general */
+/* line 10, ../../../sass/skins/darkblue.scss */
+a {
+  color: #489dc1;
+}
+/* line 13, ../../../sass/skins/darkblue.scss */
+a:hover, a:focus {
+  color: #347a98;
+}
+
+/* line 18, ../../../sass/skins/darkblue.scss */
+.top-bar {
+  background-color: #1e6887;
+}
+/* line 22, ../../../sass/skins/darkblue.scss */
+.top-bar .top-bar-right .btn-link {
+  color: #8ccbe5;
+}
+/* line 25, ../../../sass/skins/darkblue.scss */
+.top-bar .top-bar-right .btn-link:hover {
+  color: #fff;
+}
+/* line 32, ../../../sass/skins/darkblue.scss */
+.top-bar .notifications .count {
+  border-color: #1e6887;
+}
+/* line 38, ../../../sass/skins/darkblue.scss */
+.top-bar .searchbox input[type="search"] {
+  background-color: #103848;
+  border-color: #103848;
+}
+/* line 43, ../../../sass/skins/darkblue.scss */
+.top-bar .searchbox .btn {
+  background-color: #23789c;
+  border-color: #103848;
+}
+/* line 47, ../../../sass/skins/darkblue.scss */
+.top-bar .searchbox .btn i {
+  color: #195872;
+}
+/* line 51, ../../../sass/skins/darkblue.scss */
+.top-bar .searchbox .btn:hover {
+  border-color: #103848;
+}
+/* line 54, ../../../sass/skins/darkblue.scss */
+.top-bar .searchbox .btn:hover i {
+  color: #15485d;
+}
+
+/* widget */
+/* line 63, ../../../sass/skins/darkblue.scss */
+.widget {
+  border-color: #2c98c6;
+}
+/* line 66, ../../../sass/skins/darkblue.scss */
+.widget .widget-header {
+  background-color: #1e6887;
+  border-bottom-color: #195872;
+  color: #fff;
+}
+/* line 71, ../../../sass/skins/darkblue.scss */
+.widget .widget-header em {
+  color: #fff;
+}
+/* line 75, ../../../sass/skins/darkblue.scss */
+.widget .widget-header .btn-help {
+  color: #38a5d3;
+}
+/* line 79, ../../../sass/skins/darkblue.scss */
+.widget .widget-header .widget-header-toolbar {
+  border-left-color: #1b5e7a;
+}
+/* line 82, ../../../sass/skins/darkblue.scss */
+.widget .widget-header .widget-header-toolbar .control-title {
+  color: #fff;
+}
+/* line 87, ../../../sass/skins/darkblue.scss */
+.widget .widget-header .btn-group > a {
+  color: #fff;
+}
+/* line 90, ../../../sass/skins/darkblue.scss */
+.widget .widget-header .btn-group > a:hover, .widget .widget-header .btn-group > a:focus {
+  color: #cef1ff;
+}
+
+/* main content */
+/* line 99, ../../../sass/skins/darkblue.scss */
+.main-header h2 {
+  color: #174e66;
+  border-right-color: #2c98c6;
+}
+/* line 104, ../../../sass/skins/darkblue.scss */
+.main-header em {
+  color: #217294;
+}
+
+/* footer */
+/* line 110, ../../../sass/skins/darkblue.scss */
+.footer {
+  background-color: #1e6887;
+}

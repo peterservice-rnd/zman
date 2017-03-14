@@ -1,0 +1,18 @@
+{
+  "name": "zk",
+  "dependencies": {
+    "bootstrap": "~3",
+    "angular": "1.4.*",
+    "angular-sanitize": "1.4.*",
+    "angular-resource": "1.4.*",
+    "angular-ui-tree": "2.*",
+    "modernizr": "2.8.*",
+    "ng-file-upload": "9.*",
+    "ngtoast": "1.*",
+    "flexboxgrid": "6.*",
+    "ace": "1.*",
+    "angular-ui-ace": "0.*",
+    "angular-recursion": "~1.0.5",
+    "angular-animate": "~1.4.8"
+  }
+}

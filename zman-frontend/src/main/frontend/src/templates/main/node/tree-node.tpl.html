@@ -1,0 +1,20 @@
+<div class="{{ treeCtrl.isSelected() ? 'selected' : '' }}">
+    <div ui-tree-handle>
+        <div class="node-icons" data-ng-click="treeCtrl.toggle()">
+            <i data-ng-show="node.hasChildren" class="fa fa-{{ collapsed ? 'caret-right' : 'caret-down' }}"></i>
+            <i data-ng-show="node.hasChildren"
+               class="fa fa-{{ treeCtrl.loading ? 'refresh fa-spin' : ('folder' + (collapsed ? '' : '-open')) }}"></i>
+            <i data-ng-hide="node.hasChildren" class="fa fa-file"></i>
+        </div>
+        <div class="node-path"
+             ng-dblclick="treeCtrl.toggle()"
+             data-ng-click="treeCtrl.select()">
+            /<span data-ng-bind="node.znodeKey"></span>
+        </div>
+    </div>
+    <ol ui-tree-nodes ng-model="node.children" data-ng-hide="collapsed">
+        <li ng-repeat="node in node.children" ui-tree-node data-collapsed="true">
+            <tree-node></tree-node>
+        </li>
+    </ol>
+</div>

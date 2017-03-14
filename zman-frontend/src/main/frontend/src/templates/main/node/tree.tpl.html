@@ -1,0 +1,9 @@
+<div style="overflow:auto; height: auto;" ui-tree
+     data-drag-enabled="false">
+    <ol ui-tree-nodes ng-model="nodeCtrl.getNodes"
+        ng-model-options="{getterSetter: true}" id="tree-root">
+        <li ng-repeat="node in nodeCtrl.getNodes()" ui-tree-node>
+            <tree-node></tree-node>
+        </li>
+    </ol>
+</div>

@@ -1,0 +1,64 @@
+@icon-danger: #A94442;
+@icon-danger-hover: darken(@icon-danger, 15%);
+
+table.table-centered tr td {
+  vertical-align: middle;
+}
+
+.node-actions button {
+  padding: 2px 5px;
+  font-size: 20px;
+  i {
+    padding-left: 2px;
+  }
+  &.danger {
+    i {
+      color: @icon-danger;
+    }
+    &:hover {
+      color: @icon-danger-hover;
+      border: 3px solid @icon-danger;
+    }
+  }
+  &:hover {
+    border: 3px solid #23527C;
+  }
+  border: 3px solid transparent;
+  will-change: border;
+  transition: border 0.5s;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.child-nodes {
+
+  .child-nodes-wrapper {
+
+    .table-header {
+      margin-bottom: 0;
+      tr {
+        border-bottom: 1px solid #DDD;
+      }
+    }
+
+    .table-body {
+      user-select: none;
+      overflow-y: auto;
+      max-height: 15vh;
+      min-height: 20px;
+      padding: 0;
+      table {
+        margin-bottom: 0;
+        tbody tr td {
+          cursor: pointer;
+          border-top: none;
+          border-bottom: 1px solid #DDD;
+        }
+      }
+    }
+  }
+}
+
+.ace_editor {
+  height: 300px;
+}
