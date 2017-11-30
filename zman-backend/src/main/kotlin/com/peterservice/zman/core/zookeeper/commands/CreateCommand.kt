@@ -5,39 +5,29 @@ import com.peterservice.zman.core.zookeeper.commands.CommandUtils.extractParentP
 import com.peterservice.zman.core.zookeeper.commands.CommandUtils.makeZPath
 import com.peterservice.zman.core.zookeeper.commands.CommandUtils.valueToBytes
 import org.apache.curator.framework.CuratorFramework
-import org.apache.curator.framework.api.transaction.CuratorOp
 
 class CreateCommand(private val client: CuratorFramework,
                     private val path: String,
                     private val node: ZNode,
                     private val overwrite: Boolean) {
 
+    private val pathToCreate = makeZPath(path, node.key)
+
     private val nodesToCreate = ArrayList<NodeBaseInfo>()
     private val nodesToUpdate = ArrayList<NodeBaseInfo>()
     private val conflicts = ArrayList<String>()
 
     fun execute(): List<String> {
-        val pathToCreate = makeZPath(path, node.key)
-        createParentNodesIfNeeded(pathToCreate)
-        collectNodesToCreate(pathToCreate, node)
-        createInTransaction()
+        collectNodes(pathToCreate, node)
+        createNodes()
         return conflicts
     }
 
-    private fun createParentNodesIfNeeded(pathToCreate: String) {
-        val parentPath = extractParentPath(pathToCreate)
-        if (parentPath == "/") return
-        val stat = client.checkExists().forPath(parentPath)
-        if (stat == null) {
-            client.create().creatingParentsIfNeeded().forPath(parentPath)
-        }
-    }
-
-    private fun collectNodesToCreate(pathToCreate: String, node: ZNode) {
+    private fun collectNodes(pathToCreate: String, node: ZNode) {
         collectSingleZnode(pathToCreate, node)
         node.children.forEach { childNode ->
             val childPath = makeZPath(pathToCreate, childNode.key)
-            collectNodesToCreate(childPath, childNode)
+            collectNodes(childPath, childNode)
         }
     }
 
@@ -55,19 +45,27 @@ class CreateCommand(private val client: CuratorFramework,
         nodesToCreate += NodeBaseInfo(pathToCreate, bytes)
     }
 
-    private fun createInTransaction() {
-        val operations = mutableListOf<CuratorOp>()
+    private fun createNodes() {
 
-        for ((path, data) in nodesToUpdate) {
-            operations += client.transactionOp().setData().forPath(path, data)
-        }
-        for ((path, data) in nodesToCreate) {
-            operations += client.transactionOp().create().forPath(path, data)
+        createParentNodesIfNeeded(pathToCreate)
+
+        nodesToUpdate.forEach { (path, data) ->
+            client.setData().forPath(path, data)
         }
 
-        if (operations.isEmpty()) return
+        nodesToCreate.forEach { (path, data) ->
+            client.create().forPath(path, data)
+        }
 
-        client.transaction().forOperations(operations)
+    }
+
+    private fun createParentNodesIfNeeded(pathToCreate: String) {
+        val parentPath = extractParentPath(pathToCreate)
+        if (parentPath == "/") return
+        val stat = client.checkExists().forPath(parentPath)
+        if (stat == null) {
+            client.create().creatingParentsIfNeeded().forPath(parentPath)
+        }
     }
 
 }

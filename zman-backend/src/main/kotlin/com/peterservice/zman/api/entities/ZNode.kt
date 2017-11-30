@@ -8,9 +8,9 @@ data class ZNode(
         val key: String,
 
         @get:JsonProperty("znodeValue")
-        val value: String?,
+        val value: String? = null,
 
-        val hasChildren: Boolean,
+        val hasChildren: Boolean = false,
 
         val children: List<ZNode> = emptyList(),
 
