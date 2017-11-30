@@ -9,6 +9,7 @@ import org.apache.curator.framework.CuratorFramework
 import org.apache.curator.framework.CuratorFrameworkFactory
 import org.apache.curator.retry.RetryNTimes
 import org.apache.curator.test.TestingServer
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
@@ -40,6 +41,11 @@ class CuratorServiceTest {
         client.create().forPath("/path/b/d", "dValue".toByteArray(UTF_8))
         client.create().forPath("/path/b/e", "eValue".toByteArray(UTF_8))
         client.create().forPath("/path/b/e/f", "fValue".toByteArray(UTF_8))
+    }
+
+    @After
+    fun tearDown() {
+        client.close()
     }
 
     @Test
@@ -233,4 +239,23 @@ class CuratorServiceTest {
         assertEquals("node1child3Value", String(client.data.forPath("/path/for2/imported/node1/node1child3"), UTF_8))
         assertTrue(conflicts.isEmpty())
     }
+
+    /**
+     * zookeeper refuses connection if single message is larger than a megabyte
+     * that's why can't use transactional API
+     */
+    @Test
+    fun testImportMoreThanMegabyte() {
+        val headersAndStuffApproxSize = 256
+        val megabyte = ByteArray((1024 * 1024) - headersAndStuffApproxSize) { 1 }
+
+        val twoMegabytes = (1..2).map { i ->
+            ZNode(i.toString(), String(megabyte))
+        }
+
+        val hugeZNode = ZNode("stress", children = twoMegabytes)
+
+        curatorService.createZNode("/", hugeZNode, false)
+    }
+
 }
