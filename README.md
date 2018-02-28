@@ -56,6 +56,34 @@ You need some local overlay, you can read about it in [gentoo wiki](https://wiki
 # install/install.sh
 ```
 
+### Start & Stop & Manage
+
+ZMan installs as a service in systemd, so you can manage it like every other linux service:
+
+For starting up type as root:
+
+```bash
+# systemctl start zman
+```
+
+For stop:
+
+```bash
+# systemctl stop zman
+```
+
+To see status:
+
+```bash
+# systemctl status zman
+```
+
+If you want to make ZMan start with your system:
+
+```bash
+# systemctl enable zman
+```
+
 ### API
 
 *Someone help us with this one :)*
@@ -64,8 +92,8 @@ You need some local overlay, you can read about it in [gentoo wiki](https://wiki
 
 You can configure some ZMan properties through either:
 
- - /opt/zman/application.yml
- - /etc/zman/config.yml
+ - `/opt/zman/application.yml`
+ - `/etc/zman/config.yml`
 
 Default properties:
 ```yaml
@@ -77,6 +105,8 @@ zman:
   curator:
     retries: 2 # connection retries count
     sleep-time-between-retries-millis: 1000 # sleep time between retries (millis)
+
+server.port: 8080 # port where ZMan will be started
 ```
 
 ### Usage without systemd
