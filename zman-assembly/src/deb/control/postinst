@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cp -f /opt/zman/systemd/zman.service /etc/systemd/system
+
+[[ ! -e /.dockerenv ]] && systemctl daemon-reload || true

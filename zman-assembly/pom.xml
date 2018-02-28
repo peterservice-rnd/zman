@@ -33,6 +33,236 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- OS packages -->
+
+            <!-- Debian -->
+
+            <plugin>
+                <artifactId>jdeb</artifactId>
+                <groupId>org.vafer</groupId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>jdeb</goal>
+                        </goals>
+                        <configuration>
+                            <deb>${build.directory}/zman_${version}.deb</deb>
+                            <attach>false</attach>
+                            <signPackage>false</signPackage>
+                            <skipPOMs>false</skipPOMs>
+
+                            <dataSet>
+                                <data>
+                                    <src>../zman-backend/target/zman.war</src>
+                                    <type>file</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <prefix>/opt/zman</prefix>
+                                        <user>zman</user>
+                                        <group>zman</group>
+                                        <filemode>755</filemode>
+                                    </mapper>
+                                </data>
+
+                                <data>
+                                    <src>assembly/zman</src>
+                                    <type>file</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <prefix>/opt/zman/bin</prefix>
+                                        <user>zman</user>
+                                        <group>zman</group>
+                                        <filemode>755</filemode>
+                                    </mapper>
+                                </data>
+
+                                <data>
+                                    <src>assembly/zman.service</src>
+                                    <type>file</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <prefix>/opt/zman/systemd</prefix>
+                                        <user>zman</user>
+                                        <group>zman</group>
+                                        <filemode>644</filemode>
+                                    </mapper>
+                                </data>
+
+                                <data>
+                                    <src>../README.md</src>
+                                    <type>file</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <prefix>/opt/zman</prefix>
+                                        <user>zman</user>
+                                        <group>zman</group>
+                                        <filemode>644</filemode>
+                                    </mapper>
+                                </data>
+
+                                <data>
+                                    <src>assembly/application.yml</src>
+                                    <type>file</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <prefix>/opt/zman</prefix>
+                                        <user>zman</user>
+                                        <group>zman</group>
+                                        <filemode>644</filemode>
+                                    </mapper>
+                                </data>
+
+                                <data>
+                                    <src>../zman-frontend/target/frontend</src>
+                                    <type>directory</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <prefix>/opt/zman/frontend</prefix>
+                                        <user>zman</user>
+                                        <group>zman</group>
+                                        <filemode>644</filemode>
+                                    </mapper>
+                                </data>
+
+                                <data>
+                                    <type>link</type>
+                                    <linkName>/etc/zman/config.yml</linkName>
+                                    <linkTarget>/opt/zman/application.yml</linkTarget>
+                                    <symlink>true</symlink>
+                                </data>
+
+                                <data>
+                                    <type>link</type>
+                                    <linkName>/usr/bin/zman</linkName>
+                                    <linkTarget>/opt/zman/bin/zman</linkTarget>
+                                    <symlink>true</symlink>
+                                </data>
+                            </dataSet>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- RPM -->
+
+            <plugin>
+                <groupId>de.dentrassi.maven</groupId>
+                <artifactId>rpm</artifactId>
+                <version>0.10.0</version>
+
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>rpm</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <configuration>
+                    <packageName>zman</packageName>
+                    <skipSigning>true</skipSigning>
+                    <attach>false</attach>
+
+                    <requires>
+                        <dependency>java-1.8.0-openjdk</dependency>
+                    </requires>
+
+                    <rulesets>
+                        <defaultRuleset>
+                            <rules>
+                                <rule>
+                                    <user>zman</user>
+                                    <group>zman</group>
+                                </rule>
+                            </rules>
+                        </defaultRuleset>
+                    </rulesets>
+
+                    <entries>
+                        <entry>
+                            <name>/opt/zman/db</name>
+                            <directory>true</directory>
+                        </entry>
+
+                        <entry>
+                            <name>/var/log/zman</name>
+                            <directory>true</directory>
+                        </entry>
+
+                        <entry>
+                            <name>/opt/zman/logs</name>
+                            <linkTo>/var/log/zman</linkTo>
+                        </entry>
+
+                        <entry>
+                            <name>/opt/zman/zman.war</name>
+                            <file>../zman-backend/target/zman.war</file>
+                            <mode>755</mode>
+                        </entry>
+
+                        <entry>
+                            <name>/opt/zman/bin/zman</name>
+                            <file>assembly/zman</file>
+                            <mode>755</mode>
+                        </entry>
+
+                        <entry>
+                            <name>/opt/zman/README.md</name>
+                            <file>../README.md</file>
+                            <readme>true</readme>
+                            <mode>644</mode>
+                        </entry>
+
+                        <entry>
+                            <name>/opt/zman/systemd/zman.service</name>
+                            <file>assembly/zman.service</file>
+                            <mode>644</mode>
+                        </entry>
+
+                        <entry>
+                            <name>/usr/bin/zman</name>
+                            <linkTo>/opt/zman/bin/zman</linkTo>
+                        </entry>
+
+                        <entry>
+                            <name>/opt/zman/application.yml</name>
+                            <file>assembly/application.yml</file>
+                            <mode>644</mode>
+                        </entry>
+
+                        <entry>
+                            <name>/etc/zman/config.yml</name>
+                            <linkTo>/opt/zman/application.yml</linkTo>
+                        </entry>
+
+                        <entry>
+                            <name>/opt/zman/frontend</name>
+                            <collect>
+                                <from>../zman-frontend/target/frontend</from>
+                            </collect>
+                        </entry>
+                    </entries>
+
+                    <beforeInstallation>
+                        <interpreter>/bin/bash</interpreter>
+                        <file>src/deb/control/preinst</file>
+                    </beforeInstallation>
+
+                    <afterInstallation>
+                        <interpreter>/bin/bash</interpreter>
+                        <file>src/deb/control/postinst</file>
+                    </afterInstallation>
+
+                    <beforeRemoval>
+                        <interpreter>/bin/bash</interpreter>
+                        <file>src/deb/control/preinst</file>
+                    </beforeRemoval>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

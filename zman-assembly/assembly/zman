@@ -1,37 +1,63 @@
 #!/bin/bash
 
-ZWORK_DIR=$(cd $(dirname $0) && cd ../ && pwd);
+function r-path() {
+    if which realpath &> /dev/null; then
+        realpath $1
+    else
+        readlink -f $1
+    fi
+}
+
+ZWORK_DIR=$(dirname $(dirname $(r-path $0)));
 ZWAR_NAME=zman.war
-ZPORT=8080
+ZPORT=
 cd $ZWORK_DIR;
 
-for i in "$@"
-do
-case $i in
-    -f|--foreground)
-    echo "Run in foreground" # need for docker
-    FOREGROUND=true
-    ;;
-    -p=*|--port=*)
-    echo "Use port "${i#*=}
-    ZPORT="${i#*=}"
-    ;;
-    start)
-    ACTION="start"
-    ;;
-    stop)
-    ACTION="stop"
-    ;;
-    *)
-    echo "Usage: zman <start|stop> [-p|--port]"
-    echo "    start -p=8888 - start zman on specified port (default 8080)"
-    echo "    stop  - stop running zman"
-    echo
-    ;;
-esac
+while [[ $# -gt 0 ]]; do
+    case $1 in
+
+        -f|--foreground)
+            echo "Run in foreground" # need for docker
+            FOREGROUND=true
+            shift
+            ;;
+
+        -p=*|--port=*)
+            echo "Use port "$2
+            ZPORT="$2"
+            shift 2
+            ;;
+
+        start)
+            ACTION="start"
+            shift
+            ;;
+
+        stop)
+            ACTION="stop"
+            shift
+            ;;
+
+        *)
+            echo "Usage: zman <start|stop> [-p|--port]"
+            echo "    start -p=8888 - start zman on specified port (default 8080)"
+            echo "    stop  - stop running zman"
+            echo
+            ;;
+    esac
 done
 
-RUN_LINE="java -jar $ZWORK_DIR/zman.war --server.port=$ZPORT > $ZWORK_DIR/log/zman.log 2>&1"
+RUN_LINE=
+
+if [[ "$ZPORT" == "" ]]; then
+    RUN_LINE="java -jar $ZWORK_DIR/zman.war > $ZWORK_DIR/log/zman.log 2>&1"
+else
+    RUN_LINE="java -jar $ZWORK_DIR/zman.war --server.port=$ZPORT > $ZWORK_DIR/log/zman.log 2>&1"
+fi
+
+function zmanPid() {
+    ps aux | grep zman | grep war | grep -v grep | grep -P '^\d+'
+}
 
 function start {
     if [[ "$(jps | grep zman.war)" ]]; then
@@ -48,11 +74,11 @@ function start {
 }
 
 function stop {
-    if [[ -z "$(jps | grep zman.war)" ]]; then
+    if [[ -z "$(zmanPid)" ]]; then
         echo "Zman is not running" >&2
         exit
     fi
-    kill -9 `jps | grep zman.war | grep -oP '^\d+'` > /dev/null 2>&1
+    kill -9 $(zmanPid) > /dev/null 2>&1
     echo "Stopped"
 }
 

@@ -1,0 +1,8 @@
+Package: zman
+Version: [[version]]
+Section: misc
+Priority: low
+Architecture: all
+Description: ZMan - Zookeeper Web Client
+Depends: openjdk-8-jre
+Maintainer: Kirill Saksin <smt@smt.run>

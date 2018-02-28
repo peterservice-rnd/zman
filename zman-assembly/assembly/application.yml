@@ -6,3 +6,5 @@ zman:
   curator:
     retries: 2
     sleep-time-between-retries-millis: 1000
+
+server.port: 8080

@@ -17,7 +17,7 @@ gen-external-apklibs
 out
 
 #Maven
-/target
+target/
 release.properties
 pom.xml.*
 

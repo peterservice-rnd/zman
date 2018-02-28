@@ -1,0 +1,6 @@
+#!/bin/bash
+
+getent group zman || groupadd -f -r zman
+id -u zman &> /dev/null || useradd -r -m -c 'zman user' zman -g zman
+
+[[ ! -e /.dockerenv ]] && [[ -e /etc/systemd/system/zman.service ]] && ( echo "Stopping old ZMan instance if running..." && systemctl stop zman ) || true
