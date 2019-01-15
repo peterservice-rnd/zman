@@ -27,7 +27,9 @@
 
         <swagger.version>2.6.1</swagger.version>
         <woodstox.version>4.4.1</woodstox.version>
-        <curator.version>3.2.1</curator.version>
+        <curator.version>4.1.0</curator.version>
+        <curator.test.version>2.12.0</curator.test.version>
+        <zookeeper.version>3.4.8</zookeeper.version>
         <kotlin.version>1.1.0</kotlin.version>
         <klogging.version>1.4.1</klogging.version>
         <jackson-kotlin.version>2.8.7</jackson-kotlin.version>
@@ -49,6 +51,11 @@
                 <groupId>org.apache.curator</groupId>
                 <artifactId>curator-framework</artifactId>
                 <version>${curator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.zookeeper</groupId>
+                <artifactId>zookeeper</artifactId>
+                <version>${zookeeper.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.jetbrains.kotlin</groupId>
@@ -78,7 +85,7 @@
             <dependency>
                 <groupId>org.apache.curator</groupId>
                 <artifactId>curator-test</artifactId>
-                <version>${curator.version}</version>
+                <version>${curator.test.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
