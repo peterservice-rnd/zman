@@ -1,4 +1,4 @@
-package com.peterservice.zman.core.zookeeper
+package com.peterservice.zman.core.mvc.authentication
 
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean
 import org.springframework.core.env.PropertiesPropertySource

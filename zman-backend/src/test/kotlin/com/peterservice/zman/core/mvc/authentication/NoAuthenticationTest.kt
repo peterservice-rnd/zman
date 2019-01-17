@@ -16,12 +16,10 @@ import javax.validation.constraints.NotNull
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @TestPropertySource(properties = arrayOf("authentication.type: NONE"))
-class NoAuthenticationITTest {
+class NoAuthenticationTest {
 
     @Test
-    @Throws(Exception::class)
     fun getServicesInfoPositiveWithBasicAuthentication() {
-
         mockMvc.perform(get("/api/servers"))
                 .andExpect(status().isOk)
                 .andReturn()
