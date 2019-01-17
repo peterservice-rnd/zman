@@ -31,7 +31,11 @@ open class WebSecurityConfiguration: WebSecurityConfigurerAdapter() {
                 .authorizeRequests().anyRequest().authenticated()
                 .and()
                 .csrf().disable()
-                .httpBasic()
+                .formLogin()
+                .and()
+                .logout()
+                .logoutUrl("/logout")
+                .deleteCookies("JSESSIONID")
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // явное включение сессии
