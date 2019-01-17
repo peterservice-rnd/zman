@@ -10,10 +10,6 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 open class EhCacheConfiguration {
 
-    companion object {
-        const val evictionPolicy = "evictionPolicy"
-    }
-
     @Value("\${zman.cache.max-elements:20}")
     private var maxElements: Int = 20
     @Value("\${zman.cache.time-to-idle-seconds:1800}")
@@ -27,7 +23,6 @@ open class EhCacheConfiguration {
                 .cache(CacheConfiguration()
                         .name("ZookeeperServiceCache")
                         .eternal(false)
-                        .memoryStoreEvictionPolicy(evictionPolicy)
                         .maxEntriesLocalHeap(maxElements)
                         .timeToIdleSeconds(timeToIdleSeconds)
                 )
