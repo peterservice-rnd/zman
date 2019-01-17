@@ -1,0 +1,102 @@
+#  Создание объектов для интеграционных тестов LDAP аутентификации
+
+dn: dc=billing,dc=ru
+objectclass: top
+objectclass: domain
+objectclass: extensibleObject
+dc: billing
+
+dn: ou=groups,dc=billing,dc=ru
+objectclass: top
+objectclass: organizationalUnit
+ou: groups
+
+dn: ou=subgroups,ou=groups,dc=billing,dc=ru
+objectclass: top
+objectclass: organizationalUnit
+ou: subgroups
+
+dn: ou=people,dc=billing,dc=ru
+objectclass: top
+objectclass: organizationalUnit
+ou: people
+
+dn: ou=otherpeople,ou=people,dc=billing,dc=ru
+objectclass: top
+objectclass: organizationalUnit
+ou: otherpeople
+
+dn: uid=bob,ou=people,dc=billing,dc=ru
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+cn: Bob Hamilton
+sn: Hamilton
+uid: bob
+userPassword: bob123
+
+dn: uid=alice,ou=otherpeople,ou=people,dc=billing,dc=ru
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+cn: Alice Smith
+sn: Smith
+uid: alice
+userPassword: alicepassword
+
+dn: uid=buratino,ou=people,dc=billing,dc=ru
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+cn: Buratino, Drova
+sn: Drova
+uid: buratino
+userPassword: buratinopassword
+
+dn: uid=megadmin,ou=people,dc=billing,dc=ru
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+cn: megadmin
+sn: adminovich
+uid: megadmin
+userPassword: megadminpassword
+
+dn: uid=haster,ou=people,dc=billing,dc=ru
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+cn: Haster Hasterov
+sn: Hasterov
+uid: haster
+userPassword: hasterpassword
+
+dn: cn=Product Administrator,ou=groups,dc=billing,dc=ru
+objectclass: top
+objectclass: groupOfUniqueNames
+cn: Product Administrator
+ou: groups
+uniqueMember: uid=bob,ou=people,dc=billing,dc=ru
+uniqueMember: uid=haster,ou=people,dc=billing,dc=ru
+
+dn: cn=Everyones,ou=groups,dc=billing,dc=ru
+objectclass: top
+objectclass: groupOfUniqueNames
+cn: Everyones
+ou: groups
+uniqueMember: uid=bob,ou=people,dc=billing,dc=ru
+uniqueMember: uid=alice,ou=otherpeople,ou=people,dc=billing,dc=ru
+uniqueMember: uid=haster,ou=people,dc=billing,dc=ru
+
+dn: cn=Product Viewer,ou=subgroups,ou=groups,dc=billing,dc=ru
+objectclass: top
+objectclass: groupOfUniqueNames
+cn: Product Viewer
+ou: subgroups
+uniqueMember: uid=alice,ou=otherpeople,ou=people,dc=billing,dc=ru
+uniqueMember: uid=haster,ou=people,dc=billing,dc=ru

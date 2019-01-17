@@ -21,9 +21,31 @@ zman:
     retries: 2
     sleep-time-between-retries-millis: 1000
 
+authentication:
+  type: NONE
+
+#  ad:
+#    domain: "operator.ru"
+#    url: "ldap://dc.operator.ru/"
+#
+#  ldap:
+#    base: "dc=operator,dc=ru"
+#    url: "ldap://dc.operator.ru:389"
+#
+#    #may be empty if userSearchFilter & userSearchBase are set
+#    userDnPatterns:
+#      - "uid={0},ou=people"
+#
+#    #may be empty if userDnPatterns is set
+#    #userDN: "cn=administrator,ou=people"
+#    #userPassword: "pwd"
+#    userSearchFilter: "(uid={0})"
+#    userSearchBase: "ou=people"
+
 ---
 
 spring:
     profiles: dev
 frontend:
   path: "zman-frontend/target/frontend"
+

@@ -1,0 +1,25 @@
+test:
+  ldap:
+    port: 56744
+
+spring:
+  ldap:
+    embedded:
+      base-dn: "dc=billing,dc=ru"
+      ldif: "classpath:test-server.ldif" # Schema (LDIF) script resource reference.
+      port: ${test.ldap.port} # Embedded LDAP port.
+      validation:
+        enabled: true # Enable LDAP schema validation.
+
+authentication:
+  type: LDAP
+  ldap:
+    base: "dc=billing,dc=ru"
+    url: "ldap://localhost:${test.ldap.port}"
+    userDnPatterns:
+      - "uid={0},ou=people"
+      - "uid={0},ou=otherpeople,ou=people"
+
+testUser:
+  login: bob
+  password: bob123
