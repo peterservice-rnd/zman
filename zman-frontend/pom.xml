@@ -49,6 +49,7 @@
                                     <directory>${project.basedir}/target</directory>
                                     <includes>
                                         <include>index.html</include>
+                                        <include>login.html</include>
                                         <include>assets/**</include>
                                     </includes>
                                 </resource>

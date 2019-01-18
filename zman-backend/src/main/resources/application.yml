@@ -45,7 +45,7 @@ authentication:
 ---
 
 spring:
-    profiles: dev
+  profiles: dev
 frontend:
   path: "zman-frontend/target/frontend"
 

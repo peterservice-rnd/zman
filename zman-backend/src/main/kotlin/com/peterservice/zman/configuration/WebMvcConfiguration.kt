@@ -21,10 +21,12 @@ open class WebMvcConfiguration : WebMvcConfigurerAdapter() {
         with(registry) {
             addResourceHandler("/assets/**").addResourceLocations("file:$frontendPath/assets/")
             addResourceHandler("/index.html").addResourceLocations("file:$frontendPath/index.html")
+            addResourceHandler("/login.html").addResourceLocations("file:$frontendPath/login.html")
         }
     }
 
     override fun addViewControllers(registry: ViewControllerRegistry) {
+        registry.addViewController("/login").setViewName("forward:/login.html")
         registry.addViewController("/").setViewName("forward:/index.html")
     }
 
