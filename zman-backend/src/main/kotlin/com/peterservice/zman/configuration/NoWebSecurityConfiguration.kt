@@ -11,6 +11,6 @@ open class NoWebSecurityConfiguration : WebSecurityConfigurerAdapter() {
 
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
-        http.anonymous();
+        http.anonymous().and().csrf().disable()
     }
 }

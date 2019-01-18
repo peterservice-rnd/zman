@@ -21,7 +21,7 @@ import javax.validation.constraints.NotNull
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @PropertySource(factory = YamlPropertySourceFactory::class, value = "classpath:application-ldap.yml")
-@TestPropertySource(properties = arrayOf("authentication.type: LDAP"))
+@TestPropertySource(properties = arrayOf("authentication.type: LDAP", "spring.datasource.url: jdbc:h2:mem:zk"))
 class LdapAuthenticationViaUserBindTest {
 
     @Test
