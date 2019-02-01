@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull
 
 
 
-@ConditionalOnExpression("'\${authentication.type}' != 'NONE'")
+@ConditionalOnExpression("'\${authentication.type}' != 'NONE' && '\${authentication.type}' != 'KERBEROS'")
 @Configuration
 open class WebSecurityConfiguration: WebSecurityConfigurerAdapter() {
 
@@ -31,11 +31,9 @@ open class WebSecurityConfiguration: WebSecurityConfigurerAdapter() {
                 .authorizeRequests().anyRequest().authenticated()
                 .and()
                 .csrf().disable()
-                .formLogin()
+                .formLogin().permitAll()
                 .and()
-                .logout()
-                .logoutUrl("/logout")
-                .deleteCookies("JSESSIONID")
+                .logout().logoutUrl("/logout").permitAll().deleteCookies("JSESSIONID")
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // явное включение сессии

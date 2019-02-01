@@ -41,7 +41,10 @@ authentication:
 #    #userPassword: "pwd"
 #    userSearchFilter: "(uid={0})"
 #    userSearchBase: "ou=people"
-
+#
+#  kerberos:
+#    servicePrincipal: tomcat/server.domain.com@DOMAIN.COM
+#    keytabFilePath: /some/path/tomcat.keytab
 ---
 
 spring:
