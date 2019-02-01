@@ -28,22 +28,22 @@ open class WebSecurityConfiguration : WebSecurityConfigurerAdapter() {
     override fun configure(http: HttpSecurity) {
         http
             .authorizeRequests()
-            .antMatchers("/login").permitAll()
-            .antMatchers("/assets/**").permitAll()
-            .anyRequest().authenticated()
+                .antMatchers("/login").permitAll()
+                .antMatchers("/assets/**").permitAll()
+                .anyRequest().authenticated()
             .and()
             .csrf().disable()
             .formLogin()
-            .loginPage("/login")
-            .defaultSuccessUrl("/", false)
+                .loginPage("/login")
+                .defaultSuccessUrl("/", false)
             .and()
             .logout()
-            .logoutUrl("/logout")
-            .logoutSuccessUrl("/login")
-            .deleteCookies("JSESSIONID")
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login")
+                .deleteCookies("JSESSIONID")
             .and()
             .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // явное включение сессии
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // явное включение сессии
     }
 
     @Bean
