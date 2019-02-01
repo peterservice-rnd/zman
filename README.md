@@ -21,7 +21,7 @@ zman:
 zman application can be protected with authentication. Currently three authentication types are supported, besides simple non-protected one:
 * LDAP: authentication against any LDAP directory using generic LDAP interface. User is prompted to input his name and password.
 * AD: LDAP authentication against MS Active Directory. Does the same as LDAP, but with much easier configuration.
-* KERBEROS: authentication against any Kerberos MDC, including MS Active Directory. Itoutperforms "AD" type for Windows users, as it allows for SSO, letting user access zman automatically without entering their domain credentials.
+* KERBEROS: authentication against any Kerberos MDC, including MS Active Directory. It outperforms "AD" type for Windows users, as it allows for SSO, letting user access zman automatically without entering their domain credentials.
 ##### Configuring Authentication For Active Directory
 ```yaml
 authentication:
@@ -44,6 +44,7 @@ authentication:
 
 where *srvAccountName* is some domain account to associate with zman application, *~7rGrC76#* - its sample password
 Pricipal name HTTP/server-name.subnet.yourdomain.com@YOURDOMAIN.COM should correspond to the network name where zman is run.
+Debug hint: SPNEGO won't work when you access local zman server. You may either make requests from another machine or open server:port/login URL manually.
 
 ### Usage:
 ```bash
