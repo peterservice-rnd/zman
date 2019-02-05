@@ -15,10 +15,9 @@ import org.springframework.security.web.firewall.HttpFirewall
 import javax.validation.constraints.NotNull
 
 
-
-@ConditionalOnExpression("'\${authentication.type}' != 'NONE'")
+@ConditionalOnExpression("'\${authentication.type}' != 'NONE' && '\${authentication.type}' != 'KERBEROS'")
 @Configuration
-open class WebSecurityConfiguration: WebSecurityConfigurerAdapter() {
+open class WebSecurityConfiguration : WebSecurityConfigurerAdapter() {
 
     @Throws(Exception::class)
     override fun configure(auth: AuthenticationManagerBuilder) {
@@ -28,16 +27,22 @@ open class WebSecurityConfiguration: WebSecurityConfigurerAdapter() {
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
         http
-                .authorizeRequests().anyRequest().authenticated()
-                .and()
-                .csrf().disable()
-                .formLogin()
-                .and()
-                .logout()
+            .authorizeRequests()
+                .antMatchers("/login").permitAll()
+                .antMatchers("/assets/**").permitAll()
+                .anyRequest().authenticated()
+            .and()
+            .csrf().disable()
+            .formLogin()
+                .loginPage("/login")
+                .defaultSuccessUrl("/", false)
+            .and()
+            .logout()
                 .logoutUrl("/logout")
+                .logoutSuccessUrl("/login")
                 .deleteCookies("JSESSIONID")
-                .and()
-                .sessionManagement()
+            .and()
+            .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // явное включение сессии
     }
 

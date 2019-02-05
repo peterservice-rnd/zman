@@ -11,6 +11,14 @@ open class NoWebSecurityConfiguration : WebSecurityConfigurerAdapter() {
 
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
-        http.anonymous().and().csrf().disable()
+        http
+            .anonymous()
+            .and()
+            .authorizeRequests()
+            .antMatchers("/login*").denyAll()
+            .antMatchers("/logout").denyAll()
+            .and()
+            .csrf()
+            .disable()
     }
 }

@@ -6,6 +6,7 @@ import com.peterservice.zman.api.exceptions.AliasNotFoundException
 import com.peterservice.zman.api.exceptions.ZNodeNotFoundException
 import com.peterservice.zman.api.exceptions.ZookeeperConnectionException
 import mu.KLogging
+import org.apache.zookeeper.KeeperException
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -53,6 +54,14 @@ open class ExceptionHandlingController {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     fun zookeeperConnectionExceptionHandler(e: ZookeeperConnectionException): Message {
+        logger.error(e.message, e)
+        return standardMessage(e)
+    }
+
+    @ExceptionHandler(value = KeeperException.AuthFailedException::class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseBody
+    fun zookeeperAuthenticationExceptionHandler(e: KeeperException.AuthFailedException): Message {
         logger.error(e.message, e)
         return standardMessage(e)
     }
