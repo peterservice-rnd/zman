@@ -10,6 +10,7 @@ import org.springframework.core.io.FileSystemResource
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.kerberos.authentication.KerberosAuthenticationProvider
 import org.springframework.security.kerberos.authentication.KerberosServiceAuthenticationProvider
@@ -27,6 +28,7 @@ import org.springframework.security.web.firewall.HttpFirewall
 @ConditionalOnExpression("'\${authentication.type}' == 'KERBEROS'")
 @ConfigurationProperties("authentication.kerberos")
 @Configuration
+@EnableWebSecurity
 open class WebSecurityKerberosConfiguration : WebSecurityConfigurerAdapter() {
     private val logger = LoggerFactory.getLogger(javaClass)
 

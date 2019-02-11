@@ -1,6 +1,7 @@
 package com.peterservice.zman.core.zookeeper.commands
 
 import com.peterservice.zman.api.entities.ZNode
+import com.peterservice.zman.core.zookeeper.audit.LoggedAction
 import com.peterservice.zman.core.zookeeper.commands.CommandUtils.extractParentPath
 import com.peterservice.zman.core.zookeeper.commands.CommandUtils.makeZPath
 import com.peterservice.zman.core.zookeeper.commands.CommandUtils.valueToBytes
@@ -17,9 +18,18 @@ class CreateCommand(private val client: CuratorFramework,
     private val nodesToUpdate = ArrayList<NodeBaseInfo>()
     private val conflicts = ArrayList<String>()
 
-    fun execute(): List<String> {
+    fun execute(actionBuilder: LoggedAction.Builder) : List<String> {
         collectNodes(pathToCreate, node)
         createNodes()
+
+        if (conflicts.isEmpty()) {
+            actionBuilder
+                    .action("create")
+                    .server(client.zookeeperClient.currentConnectionString)
+                    .path(pathToCreate)
+                    .newData(node.value)
+        }
+
         return conflicts
     }
 

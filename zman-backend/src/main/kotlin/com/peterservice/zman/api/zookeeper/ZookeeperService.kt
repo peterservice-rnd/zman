@@ -4,13 +4,13 @@ import com.peterservice.zman.api.entities.ZNode
 
 interface ZookeeperService {
 
-    fun createZNode(path: String, znode: ZNode, overwrite: Boolean): List<String>
+    fun createZNode(path: String, znode: ZNode, overwrite: Boolean, user: String?): List<String>
 
-    fun readZNode(path: String, recursive: Boolean): ZNode
+    fun readZNode(path: String, recursive: Boolean, user: String?): ZNode
 
-    fun updateZNode(path: String, znode: ZNode)
+    fun updateZNode(path: String, znode: ZNode, user: String?)
 
-    fun deleteZNode(path: String)
+    fun deleteZNode(path: String, user: String?)
 
     fun close()
 }

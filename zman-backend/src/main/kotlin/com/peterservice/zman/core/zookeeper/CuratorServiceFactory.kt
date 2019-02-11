@@ -3,15 +3,17 @@ package com.peterservice.zman.core.zookeeper
 import com.peterservice.zman.api.entities.ZServer
 import com.peterservice.zman.api.exceptions.ZManException
 import com.peterservice.zman.api.exceptions.ZookeeperConnectionException
+import com.peterservice.zman.core.zookeeper.audit.ActionLogger
 import org.apache.curator.framework.CuratorFramework
 import org.apache.curator.framework.CuratorFrameworkFactory
 import org.apache.curator.retry.RetryNTimes
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.util.concurrent.TimeUnit
 
 @Component
-internal class CuratorServiceFactory {
+internal class CuratorServiceFactory(@Autowired private val loggerService: ActionLogger) {
 
     @Value("\${zman.curator.retries-count:2}")
     private var retries: Int = 2
@@ -20,7 +22,7 @@ internal class CuratorServiceFactory {
 
     fun create(server: ZServer): CuratorService {
         val client = createCuratorClient(server.connectionString)
-        return CuratorService(client)
+        return CuratorService(client, loggerService)
     }
 
     private fun createCuratorClient(connectionString: String): CuratorFramework {

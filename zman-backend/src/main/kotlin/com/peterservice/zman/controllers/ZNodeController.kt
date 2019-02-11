@@ -8,7 +8,9 @@ import com.peterservice.zman.api.zookeeper.ZookeeperService
 import com.peterservice.zman.api.zookeeper.ZookeeperServiceManager
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
+import java.security.Principal
 
 import javax.servlet.http.HttpServletResponse
 
@@ -28,15 +30,16 @@ class ZNodeController {
                  @RequestAttribute zpath: String,
                  @RequestParam(defaultValue = "false") export: Boolean,
                  @RequestParam(defaultValue = "json") format: String,
+                 @AuthenticationPrincipal principal: Principal?,
                  response: HttpServletResponse): ZNode {
         val zookeeperService = getService(alias)
 
         if (export) {
             addAttachmentHeader(response, buildFilename(alias, zpath, format))
-            return zookeeperService.readZNode(zpath, recursive = true)
+            return zookeeperService.readZNode(zpath, recursive = true, user = principal?.name)
         }
 
-        return zookeeperService.readZNode(zpath, recursive = false)
+        return zookeeperService.readZNode(zpath, recursive = false, user = principal?.name)
     }
 
     private fun buildFilename(alias: String, zpath: String, format: String): String {
@@ -56,9 +59,10 @@ class ZNodeController {
     fun createZNode(@PathVariable alias: String,
                     @RequestAttribute zpath: String,
                     @RequestParam(defaultValue = "false") overwrite: Boolean,
-                    @RequestBody znode: ZNode): CreationConflicts {
+                    @RequestBody znode: ZNode,
+                    @AuthenticationPrincipal principal: Principal?): CreationConflicts {
         val zookeeperService = getService(alias)
-        val conflicts = zookeeperService.createZNode(zpath, znode, overwrite)
+        val conflicts = zookeeperService.createZNode(zpath, znode, overwrite, principal?.name)
         return CreationConflicts(conflicts)
     }
 
@@ -66,17 +70,19 @@ class ZNodeController {
     @ResponseStatus(HttpStatus.OK)
     fun updateZNode(@PathVariable alias: String,
                     @RequestAttribute zpath: String,
-                    @RequestBody znode: ZNode) {
+                    @RequestBody znode: ZNode,
+                    @AuthenticationPrincipal principal: Principal?) {
         val zookeeperService = getService(alias)
-        zookeeperService.updateZNode(zpath, znode)
+        zookeeperService.updateZNode(zpath, znode, principal?.name)
     }
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
     fun deleteZNode(@PathVariable alias: String,
-                    @RequestAttribute zpath: String) {
+                    @RequestAttribute zpath: String,
+                    @AuthenticationPrincipal principal: Principal?) {
         val zookeeperService = getService(alias)
-        zookeeperService.deleteZNode(zpath)
+        zookeeperService.deleteZNode(zpath, principal?.name)
     }
 
     private fun getService(alias: String): ZookeeperService {

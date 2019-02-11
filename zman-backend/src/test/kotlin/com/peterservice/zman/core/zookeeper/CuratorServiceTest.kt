@@ -4,6 +4,8 @@ import com.google.common.base.Charsets.UTF_8
 import com.peterservice.zman.api.entities.ZNode
 import com.peterservice.zman.api.entities.ZServer
 import com.peterservice.zman.api.exceptions.ZNodeNotFoundException
+import com.peterservice.zman.core.zookeeper.audit.ActionLogger
+import com.peterservice.zman.core.zookeeper.audit.LoggedAction
 import junit.framework.TestCase.*
 import org.apache.curator.framework.CuratorFramework
 import org.apache.curator.framework.CuratorFrameworkFactory
@@ -12,20 +14,24 @@ import org.apache.curator.test.TestingServer
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.mockito.Mockito.*
 
 class CuratorServiceTest {
 
     private lateinit var curatorService: CuratorService
+    private lateinit var connectionString: String
     private lateinit var client: CuratorFramework
+    private lateinit var logger: ActionLogger
 
     @Before
     fun setUp() {
+        logger = mock(ActionLogger::class.java)
         val testingServer = TestingServer(true)
-
-        val curatorServiceFactory = CuratorServiceFactory()
+        val curatorServiceFactory = CuratorServiceFactory(logger)
+        connectionString = testingServer.connectString
 
         curatorService = curatorServiceFactory.create(ZServer().apply {
-            connectionString = testingServer.connectString
+            this.connectionString = testingServer.connectString
         })
 
         client = CuratorFrameworkFactory.newClient(
@@ -48,10 +54,12 @@ class CuratorServiceTest {
         client.close()
     }
 
+    private val user: String = "user"
+
     @Test
     fun testReadZNodeNotFound() {
         try {
-            curatorService.readZNode("/path/for/nowhere", false)
+            curatorService.readZNode("/path/for/nowhere", false, user)
             fail("no exception caught")
         } catch (e: Exception) {
             assertTrue(e is ZNodeNotFoundException)
@@ -61,15 +69,31 @@ class CuratorServiceTest {
     }
 
     @Test
+    fun testReadZNodeNotFoundNotLogged() {
+        try {
+            curatorService.readZNode("/path/for/nowhere", false, user)
+        } catch (e: Exception) {
+        }
+
+        verifyZeroInteractions(logger)
+    }
+
+    @Test
     fun testReadZNode() {
         val nodeExpected = ZNode("path", "pathValue", true, listOf(
                 ZNode("b", "bValue", true, path = "/path/b"),
                 ZNode("a", "aValue", false, path = "/path/a")
         ), path = "/path")
 
-        val nodeActual = curatorService.readZNode("/path", false)
+        val nodeActual = curatorService.readZNode("/path", false, user)
 
         assertEquals(nodeExpected, nodeActual)
+    }
+
+    @Test
+    fun testReadZNodeLogged() {
+        curatorService.readZNode("/path", false, user)
+        verify(logger).log(LoggedAction.Builder().user(user).server(connectionString).action("read").path("/path").build())
     }
 
     @Test
@@ -85,7 +109,7 @@ class CuratorServiceTest {
                 ZNode("a", "aValue", false, path = "/path/a")
         ), path = "/path")
 
-        val nodeActual = curatorService.readZNode("/path", true)
+        val nodeActual = curatorService.readZNode("/path", true, user)
 
         assertEquals(nodeExpected, nodeActual)
 
@@ -94,71 +118,123 @@ class CuratorServiceTest {
     @Test
     fun testDeleteZNodeNotFound() {
         try {
-            curatorService.deleteZNode("/path/for/nowhere")
+            curatorService.deleteZNode("/path/for/nowhere", user)
             fail("no exception caught")
         } catch (e: Exception) {
             assertTrue(e is ZNodeNotFoundException)
             assertEquals("ZNode '/path/for/nowhere' was not found", e.message)
         }
+    }
 
+    @Test
+    fun testDeleteZNodeNotFoundNotLogged() {
+        try {
+            curatorService.deleteZNode("/path/for/nowhere", user)
+        } catch (e: Exception) {
+        }
+        verifyZeroInteractions(logger)
     }
 
     @Test
     fun testDeleteZNode() {
-        curatorService.deleteZNode("/path")
-
+        curatorService.deleteZNode("/path", user)
         assertEquals(null, client.checkExists().forPath("/path"))
+    }
+
+    @Test
+    fun testDeleteZNodeLogged() {
+        curatorService.deleteZNode("/path", user)
+        verify(logger).log(LoggedAction.Builder().action("delete").server(connectionString).user(user).path("/path").build())
     }
 
     @Test
     fun testUpdateZNodeNotFound() {
         try {
-            curatorService.updateZNode("/path/for/nowhere", ZNode("", null, false))
+            curatorService.updateZNode("/path/for/nowhere", ZNode("", null, false), user)
             fail("no exception caught")
         } catch (e: Exception) {
             assertTrue(e is ZNodeNotFoundException)
             assertEquals("ZNode '/path/for/nowhere' was not found", e.message)
         }
+    }
 
+    @Test
+    fun testUpdateZNodeNotFoundNotLogged() {
+        try {
+            curatorService.updateZNode("/path/for/nowhere", ZNode("", null, false), user)
+        } catch (e: Exception) {
+        }
+        verifyZeroInteractions(logger)
     }
 
     @Test
     fun testUpdateZNode() {
-        curatorService.updateZNode("/path/b", ZNode("b", "newBValue", false))
-
+        curatorService.updateZNode("/path/b", ZNode("b", "newBValue", false), user)
         assertEquals("newBValue", String(client.data.forPath("/path/b"), UTF_8))
     }
 
     @Test
+    fun testUpdateZNodeLogged() {
+        curatorService.updateZNode("/path/b", ZNode("b", "newBValue", false), user)
+        verify(logger).log(LoggedAction.Builder().action("update").server(connectionString).user(user).path("/path/b").oldData("bValue").newData("newBValue").build())
+    }
+
+    @Test
     fun testCreateZNode() {
-        val conflicts = curatorService.createZNode("/path/b", ZNode("newNode", "newNodeValue", false), false)
+        val conflicts = curatorService.createZNode("/path/b", ZNode("newNode", "newNodeValue", false), false, user)
 
         assertEquals("newNodeValue", String(client.data.forPath("/path/b/newNode"), UTF_8))
         assertTrue(conflicts.isEmpty())
     }
 
     @Test
+    fun testCreateZNodeLogged() {
+        curatorService.createZNode("/path/b", ZNode("newNode", "newNodeValue", false), false, user)
+        verify(logger).log(LoggedAction.Builder().action("create").server(connectionString).user(user).path("/path/b/newNode").newData("newNodeValue").build())
+    }
+
+    @Test
     fun testCreateZNodeCreatingParents() {
-        val conflicts = curatorService.createZNode("/path/for2/some/parent/path", ZNode("newNode", "newNodeValue", false), false)
+        val conflicts = curatorService.createZNode("/path/for2/some/parent/path", ZNode("newNode", "newNodeValue", false), false, user)
 
         assertEquals("newNodeValue", String(client.data.forPath("/path/for2/some/parent/path/newNode"), UTF_8))
         assertTrue(conflicts.isEmpty())
     }
 
     @Test
+    fun testCreateZNodeCreatingParentsLogged() {
+        curatorService.createZNode("/path/for2/some/parent/path", ZNode("newNode", "newNodeValue", false), false, user)
+
+        assertEquals("newNodeValue", String(client.data.forPath("/path/for2/some/parent/path/newNode"), UTF_8))
+        verify(logger).log(LoggedAction.Builder().action("create").server(connectionString).user(user).path("/path/for2/some/parent/path/newNode").newData("newNodeValue").build())
+    }
+
+    @Test
     fun testCreateZNodeConflicts() {
-        val conflicts = curatorService.createZNode("/path/b", ZNode("c", "newCValue", false), false)
+        val conflicts = curatorService.createZNode("/path/b", ZNode("c", "newCValue", false), false, user)
 
         assertEquals("cValue", String(client.data.forPath("/path/b/c"), UTF_8))
         assertEquals(1, conflicts.size)
     }
 
     @Test
+    fun testCreateZNodeConflictsNoLogging() {
+        curatorService.createZNode("/path/b", ZNode("c", "newCValue", false), false, user)
+        verifyZeroInteractions(logger)
+    }
+
+    @Test
     fun testCreateZNodeOverwrite() {
-        val conflicts = curatorService.createZNode("/path/b", ZNode("c", "newCValue", false), true)
+        val conflicts = curatorService.createZNode("/path/b", ZNode("c", "newCValue", false), true, user)
 
         assertEquals("newCValue", String(client.data.forPath("/path/b/c"), UTF_8))
         assertTrue(conflicts.isEmpty())
+    }
+
+    @Test
+    fun testCreateZNodeOverwriteLogging() {
+        curatorService.createZNode("/path/b", ZNode("c", "newCValue", false), true, user)
+        verify(logger).log(LoggedAction.Builder().action("create").server(connectionString).user(user).path("/path/b/c").newData("newCValue").build())
     }
 
     @Test
@@ -171,7 +247,7 @@ class CuratorServiceTest {
                         ZNode("node1child3", "node1child3Value", false)))
         ))
 
-        val conflicts = curatorService.createZNode("/path/for2", node, false)
+        val conflicts = curatorService.createZNode("/path/for2", node, false, user)
 
         assertEquals("importedValue", String(client.data.forPath("/path/for2/imported"), UTF_8))
         assertEquals("node1Value", String(client.data.forPath("/path/for2/imported/node1"), UTF_8))
@@ -188,7 +264,7 @@ class CuratorServiceTest {
         val node = ZNode("imported", "importedValue", true, listOf(
                 ZNode("node2", "node2Value", false)
         ))
-        curatorService.createZNode("/path/for2", node, false)
+        curatorService.createZNode("/path/for2", node, false, user)
 
         //изменяем уже созданные, добавляем детей, создаем снова
         val node2 = node.copy(value = "overwrittenImportedValue", children = listOf(
@@ -200,7 +276,7 @@ class CuratorServiceTest {
                 ))
         ))
 
-        val conflicts = curatorService.createZNode("/path/for2", node2, false)
+        val conflicts = curatorService.createZNode("/path/for2", node2, false, user)
 
         assertEquals("importedValue", String(client.data.forPath("/path/for2/imported"), UTF_8))
         assertEquals("node1Value", String(client.data.forPath("/path/for2/imported/node1"), UTF_8))
@@ -217,7 +293,7 @@ class CuratorServiceTest {
         val node = ZNode("imported", "importedValue", true, listOf(
                 ZNode("node2", "node2Value", false)
         ))
-        curatorService.createZNode("/path/for2", node, false)
+        curatorService.createZNode("/path/for2", node, false, user)
 
         //изменяем уже созданные, добавляем детей, создаем снова
         val node2 = node.copy(value = "overwrittenImportedValue", children = listOf(
@@ -229,7 +305,7 @@ class CuratorServiceTest {
                 ))
         ))
 
-        val conflicts = curatorService.createZNode("/path/for2", node2, true)
+        val conflicts = curatorService.createZNode("/path/for2", node2, true, user)
 
         assertEquals("overwrittenImportedValue", String(client.data.forPath("/path/for2/imported"), UTF_8))
         assertEquals("node1Value", String(client.data.forPath("/path/for2/imported/node1"), UTF_8))
@@ -242,7 +318,7 @@ class CuratorServiceTest {
 
     /**
      * zookeeper refuses connection if single message is larger than a megabyte
-     * that's why can't use transactional API
+     * that'user why can't use transactional API
      */
     @Test
     fun testImportMoreThanMegabyte() {
@@ -255,7 +331,7 @@ class CuratorServiceTest {
 
         val hugeZNode = ZNode("stress", children = twoMegabytes)
 
-        curatorService.createZNode("/", hugeZNode, false)
+        curatorService.createZNode("/", hugeZNode, false, user)
     }
 
 }
