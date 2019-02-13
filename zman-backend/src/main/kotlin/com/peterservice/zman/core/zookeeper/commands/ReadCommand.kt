@@ -16,6 +16,7 @@ class ReadCommand(private val client: CuratorFramework,
         val stat = client.checkExists().forPath(path) ?: throwNotFoundException(path)
         val bytes = client.data.forPath(path)
         val parentNodeData = NodeBaseInfo(path, bytes, stat)
+
         return buildZNode(parentNodeData)
     }
 

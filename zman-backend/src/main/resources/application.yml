@@ -12,6 +12,9 @@ spring:
 logging.level:
   org.apache.zookeeper: WARN
 
+audit:
+  enabled: true
+
 zman:
   cache:
     max-elements: 20

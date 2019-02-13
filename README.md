@@ -48,7 +48,7 @@ Pricipal name HTTP/server-name.subnet.yourdomain.com@YOURDOMAIN.COM should corre
 Debug hint: SPNEGO won't work when you access local zman server. You may either make requests from another machine or open server:port/login URL manually.  
 
 ##### Configuring Client-Side Zookeeper Authentication
-When Zookeeper server is configured for SASL authentication, zman, acting as a Zookeeper client, should use SASL authentication, too. The main drawback of Zookeeper SASL authentication is that it uses global per-JVM security setting, making it impossible to zman to apply different security settings toits different Zookeeper connections. So once applied, zman SASL configuration affect its every connection to Zookeeper servers.
+When Zookeeper server is configured for SASL authentication, zman, acting as a Zookeeper client, should use SASL authentication, too. The main drawback of Zookeeper SASL authentication is that it uses global per-JVM security setting, making it impossible for zman to apply different security settings to its different Zookeeper connections. So once applied, zman SASL configuration affects its every connection to Zookeeper servers.
 So to enable SASL authentication, edit /conf/java.env to set this JVM optionL
 > export EXTRA_JAVA_OPTS="-Djava.security.auth.login.config=/path/to/jass_cli.conf"
 
