@@ -11,7 +11,9 @@ spring:
 
 logging.level:
   org.apache.zookeeper: WARN
-  auditReadCommands: false
+
+audit:
+  enabled: true
 
 zman:
   cache:

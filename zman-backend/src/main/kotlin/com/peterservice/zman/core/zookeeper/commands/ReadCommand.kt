@@ -1,7 +1,6 @@
 package com.peterservice.zman.core.zookeeper.commands
 
 import com.peterservice.zman.api.entities.ZNode
-import com.peterservice.zman.core.zookeeper.audit.LoggedAction
 import com.peterservice.zman.core.zookeeper.commands.CommandUtils.bytesToValue
 import com.peterservice.zman.core.zookeeper.commands.CommandUtils.makeZPath
 import com.peterservice.zman.core.zookeeper.commands.CommandUtils.throwNotFoundException
@@ -13,15 +12,10 @@ class ReadCommand(private val client: CuratorFramework,
                   private val path: String,
                   private val recursive: Boolean) {
 
-    fun execute(actionBuilder: LoggedAction.Builder): ZNode {
+    fun execute(): ZNode {
         val stat = client.checkExists().forPath(path) ?: throwNotFoundException(path)
         val bytes = client.data.forPath(path)
         val parentNodeData = NodeBaseInfo(path, bytes, stat)
-
-        actionBuilder
-                .action("read")
-                .server(client.zookeeperClient.currentConnectionString)
-                .path(path)
 
         return buildZNode(parentNodeData)
     }

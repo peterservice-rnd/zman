@@ -4,8 +4,8 @@ import com.google.common.base.Charsets.UTF_8
 import com.peterservice.zman.api.entities.ZNode
 import com.peterservice.zman.api.entities.ZServer
 import com.peterservice.zman.api.exceptions.ZNodeNotFoundException
-import com.peterservice.zman.core.zookeeper.audit.ActionLogger
-import com.peterservice.zman.core.zookeeper.audit.LoggedAction
+import com.peterservice.zman.core.zookeeper.events.ActionEvent
+import com.peterservice.zman.core.zookeeper.events.ActionListener
 import junit.framework.TestCase.*
 import org.apache.curator.framework.CuratorFramework
 import org.apache.curator.framework.CuratorFrameworkFactory
@@ -21,13 +21,14 @@ class CuratorServiceTest {
     private lateinit var curatorService: CuratorService
     private lateinit var connectionString: String
     private lateinit var client: CuratorFramework
-    private lateinit var logger: ActionLogger
+    private lateinit var listener: ActionListener
 
     @Before
     fun setUp() {
-        logger = mock(ActionLogger::class.java)
+        listener = mock(ActionListener::class.java)
         val testingServer = TestingServer(true)
-        val curatorServiceFactory = CuratorServiceFactory(logger)
+        val curatorServiceFactory = CuratorServiceFactory()
+        curatorServiceFactory.listenerServices = arrayOf(listener)
         connectionString = testingServer.connectString
 
         curatorService = curatorServiceFactory.create(ZServer().apply {
@@ -47,6 +48,7 @@ class CuratorServiceTest {
         client.create().forPath("/path/b/d", "dValue".toByteArray(UTF_8))
         client.create().forPath("/path/b/e", "eValue".toByteArray(UTF_8))
         client.create().forPath("/path/b/e/f", "fValue".toByteArray(UTF_8))
+        client.create().forPath("/path/b/noValue", null)
     }
 
     @After
@@ -69,16 +71,6 @@ class CuratorServiceTest {
     }
 
     @Test
-    fun testReadZNodeNotFoundNotLogged() {
-        try {
-            curatorService.readZNode("/path/for/nowhere", false, user)
-        } catch (e: Exception) {
-        }
-
-        verifyZeroInteractions(logger)
-    }
-
-    @Test
     fun testReadZNode() {
         val nodeExpected = ZNode("path", "pathValue", true, listOf(
                 ZNode("b", "bValue", true, path = "/path/b"),
@@ -91,12 +83,6 @@ class CuratorServiceTest {
     }
 
     @Test
-    fun testReadZNodeLogged() {
-        curatorService.readZNode("/path", false, user)
-        verify(logger).log(LoggedAction.Builder().user(user).server(connectionString).action("read").path("/path").build())
-    }
-
-    @Test
     fun testReadZNodeRecursive() {
         val nodeExpected = ZNode("path", "pathValue", true, listOf(
                 ZNode("b", "bValue", true, listOf(
@@ -104,7 +90,8 @@ class CuratorServiceTest {
                                 ZNode("f", "fValue", false, path = "/path/b/e/f")
                         ), path = "/path/b/e"),
                         ZNode("c", "cValue", false, path = "/path/b/c"),
-                        ZNode("d", "dValue", false, path = "/path/b/d")
+                        ZNode("d", "dValue", false, path = "/path/b/d"),
+                        ZNode("noValue", null, false, path = "/path/b/noValue")
                 ), path = "/path/b"),
                 ZNode("a", "aValue", false, path = "/path/a")
         ), path = "/path")
@@ -132,7 +119,7 @@ class CuratorServiceTest {
             curatorService.deleteZNode("/path/for/nowhere", user)
         } catch (e: Exception) {
         }
-        verifyZeroInteractions(logger)
+        verifyZeroInteractions(listener)
     }
 
     @Test
@@ -144,7 +131,18 @@ class CuratorServiceTest {
     @Test
     fun testDeleteZNodeLogged() {
         curatorService.deleteZNode("/path", user)
-        verify(logger).log(LoggedAction.Builder().action("delete").server(connectionString).user(user).path("/path").build())
+
+        var builderOfExpectedEvents = ActionEvent.Builder().server(connectionString).user(user)
+        builderOfExpectedEvents.action("delete").path("/path/a").oldData("aValue").add()
+        builderOfExpectedEvents.action("delete").path("/path/b").oldData("bValue").add()
+        builderOfExpectedEvents.action("delete").path("/path/b/noValue").add()
+        builderOfExpectedEvents.action("delete").path("/path/b/c").oldData("cValue").add()
+        builderOfExpectedEvents.action("delete").path("/path/b/d").oldData("dValue").add()
+        builderOfExpectedEvents.action("delete").path("/path/b/e").oldData("eValue").add()
+        builderOfExpectedEvents.action("delete").path("/path/b/e/f").oldData("fValue").add()
+        builderOfExpectedEvents.action("delete").path("/path").oldData("pathValue").add()
+
+        verify(listener).handle(builderOfExpectedEvents.build())
     }
 
     @Test
@@ -164,7 +162,7 @@ class CuratorServiceTest {
             curatorService.updateZNode("/path/for/nowhere", ZNode("", null, false), user)
         } catch (e: Exception) {
         }
-        verifyZeroInteractions(logger)
+        verifyZeroInteractions(listener)
     }
 
     @Test
@@ -176,7 +174,7 @@ class CuratorServiceTest {
     @Test
     fun testUpdateZNodeLogged() {
         curatorService.updateZNode("/path/b", ZNode("b", "newBValue", false), user)
-        verify(logger).log(LoggedAction.Builder().action("update").server(connectionString).user(user).path("/path/b").oldData("bValue").newData("newBValue").build())
+        verify(listener).handle(ActionEvent.Builder().server(connectionString).user(user).action("update").path("/path/b").oldData("bValue").newData("newBValue").add().build())
     }
 
     @Test
@@ -190,7 +188,7 @@ class CuratorServiceTest {
     @Test
     fun testCreateZNodeLogged() {
         curatorService.createZNode("/path/b", ZNode("newNode", "newNodeValue", false), false, user)
-        verify(logger).log(LoggedAction.Builder().action("create").server(connectionString).user(user).path("/path/b/newNode").newData("newNodeValue").build())
+        verify(listener).handle(ActionEvent.Builder().server(connectionString).user(user).action("create").path("/path/b/newNode").newData("newNodeValue").add().build())
     }
 
     @Test
@@ -204,9 +202,9 @@ class CuratorServiceTest {
     @Test
     fun testCreateZNodeCreatingParentsLogged() {
         curatorService.createZNode("/path/for2/some/parent/path", ZNode("newNode", "newNodeValue", false), false, user)
-
-        assertEquals("newNodeValue", String(client.data.forPath("/path/for2/some/parent/path/newNode"), UTF_8))
-        verify(logger).log(LoggedAction.Builder().action("create").server(connectionString).user(user).path("/path/for2/some/parent/path/newNode").newData("newNodeValue").build())
+        verify(listener).handle(ActionEvent.Builder().server(connectionString).user(user)
+                .action("create").path("/path/for2/some/parent/path/newNode").newData("newNodeValue").add()
+                .build())
     }
 
     @Test
@@ -220,7 +218,7 @@ class CuratorServiceTest {
     @Test
     fun testCreateZNodeConflictsNoLogging() {
         curatorService.createZNode("/path/b", ZNode("c", "newCValue", false), false, user)
-        verifyZeroInteractions(logger)
+        verifyZeroInteractions(listener)
     }
 
     @Test
@@ -234,7 +232,7 @@ class CuratorServiceTest {
     @Test
     fun testCreateZNodeOverwriteLogging() {
         curatorService.createZNode("/path/b", ZNode("c", "newCValue", false), true, user)
-        verify(logger).log(LoggedAction.Builder().action("create").server(connectionString).user(user).path("/path/b/c").newData("newCValue").build())
+        verify(listener).handle(ActionEvent.Builder().server(connectionString).user(user).action("update").path("/path/b/c").oldData("cValue").newData("newCValue").add().build())
     }
 
     @Test
@@ -318,7 +316,7 @@ class CuratorServiceTest {
 
     /**
      * zookeeper refuses connection if single message is larger than a megabyte
-     * that'user why can't use transactional API
+     * that's why can't use transactional API
      */
     @Test
     fun testImportMoreThanMegabyte() {
