@@ -1,6 +1,7 @@
 {
   "name": "zk",
   "dependencies": {
+    "jquery": "3.3.1",
     "bootstrap": "~3",
     "angular": "1.4.*",
     "angular-sanitize": "1.4.*",
