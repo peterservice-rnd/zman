@@ -1,5 +1,5 @@
 <div ng-init="currentUserCtrl.getCurrentUser()">
-    <div ng-if="currentUserCtrl.currentUser != 'anonymousUser'">
+    <div ng-if="currentUserCtrl.isLoggedIn()">
         <form class="form-logout" action="logout" method='POST'>
             Welcome, {{currentUserCtrl.currentUser}}<button class="btn btn-danger" style="margin-left: 5px;">Log Out</button>
         </form>

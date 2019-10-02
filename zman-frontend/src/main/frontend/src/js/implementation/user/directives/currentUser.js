@@ -20,6 +20,10 @@
             currentUser.getUser().then(function (resp) {
                 self.currentUser = resp.data;
             });
-        }
+        };
+
+        this.isLoggedIn = function () {
+            return 'anonymousUser' !== this.currentUser;
+        };
     }
 }(window.angular));
