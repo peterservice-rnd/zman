@@ -1,0 +1,7 @@
+<div ng-init="currentUserCtrl.getCurrentUser()">
+    <div ng-if="currentUserCtrl.currentUser != 'anonymousUser'">
+        <form class="form-logout" action="logout" method='POST'>
+            Welcome, {{currentUserCtrl.currentUser}}<button class="btn btn-danger" style="margin-left: 5px;">Log Out</button>
+        </form>
+    </div>
+</div>
