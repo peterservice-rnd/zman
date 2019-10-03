@@ -2,6 +2,7 @@ package com.peterservice.zman.controllers
 
 import com.peterservice.zman.api.entities.Authentication
 import org.springframework.http.HttpStatus
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -18,6 +19,6 @@ class AuthenticationInformationController {
             return Authentication("anonymousUser", false)
         }
 
-        return Authentication(request.userPrincipal.name, true)
+        return Authentication(request.userPrincipal.name, (request.userPrincipal as UsernamePasswordAuthenticationToken).isAuthenticated)
     }
 }
