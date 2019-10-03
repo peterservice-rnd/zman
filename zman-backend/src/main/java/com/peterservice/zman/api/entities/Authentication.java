@@ -2,11 +2,11 @@ package com.peterservice.zman.api.entities;
 
 public class Authentication {
     private String userName;
-    private Boolean isAuthentication;
+    private Boolean isAuthenticated;
 
-    public Authentication(String userName, Boolean isAuthentication) {
+    public Authentication(String userName, Boolean isAuthenticated) {
         this.userName = userName;
-        this.isAuthentication = isAuthentication;
+        this.isAuthenticated = isAuthenticated;
     }
 
     public String getUserName() {
@@ -18,10 +18,10 @@ public class Authentication {
     }
 
     public Boolean getAuthentication() {
-        return isAuthentication;
+        return isAuthenticated;
     }
 
     public void setAuthentication(Boolean authentication) {
-        isAuthentication = authentication;
+        isAuthenticated = authentication;
     }
 }

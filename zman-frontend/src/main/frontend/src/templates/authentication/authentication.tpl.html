@@ -1,0 +1,7 @@
+<div ng-init="authenticationCtrl.getAuthentication()">
+    <div ng-if="authenticationCtrl.isAuthenticated">
+        <form class="form-logout" action="logout" method='POST'>
+            Welcome, {{authenticationCtrl.currentUser}}<button class="btn btn-danger" style="margin-left: 5px;">Log Out</button>
+        </form>
+    </div>
+</div>

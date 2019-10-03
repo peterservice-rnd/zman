@@ -1,6 +1,6 @@
 (function (angular) {
     'use strict';
-    angular.module('app', ['ngAnimate', 'templates', 'aliases', 'nodes', 'users', 'misc', 'ngToast', 'app.directives'])
+    angular.module('app', ['ngAnimate', 'templates', 'aliases', 'nodes', 'authentications', 'misc', 'ngToast', 'app.directives'])
 
         .config(['ngToastProvider', function(ngToast) {
             ngToast.configure({
