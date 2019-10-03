@@ -1,4 +1,4 @@
-package com.peterservice.zman.api.entities;
+package com.peterservice.zman.api.data;
 
 public class Authentication {
     private String userName;
