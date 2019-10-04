@@ -20,7 +20,7 @@
         this.getAuthentication = function () {
             authentication.getAuthentication().then(function (resp) {
                 self.currentUser = resp.data.userName;
-                self.isAuthenticated = resp.data.authentication;
+                self.isAuthenticated = resp.data.authenticated;
             });
         };
     }
