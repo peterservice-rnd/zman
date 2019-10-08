@@ -16,9 +16,9 @@ class AuthenticationInformationController {
     @ResponseBody
     fun authentication(request: HttpServletRequest): Authentication {
         if (request.userPrincipal == null) {
-            return Authentication("", false)
+            return Authentication(false)
         }
 
-        return Authentication(request.userPrincipal.name, (request.userPrincipal as UsernamePasswordAuthenticationToken).isAuthenticated)
+        return Authentication((request.userPrincipal as UsernamePasswordAuthenticationToken).isAuthenticated, request.userPrincipal.name)
     }
 }
