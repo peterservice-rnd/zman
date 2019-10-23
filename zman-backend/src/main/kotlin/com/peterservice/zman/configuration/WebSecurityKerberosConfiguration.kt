@@ -45,16 +45,19 @@ open class WebSecurityKerberosConfiguration : WebSecurityConfigurerAdapter() {
         http
                 .exceptionHandling()
                     .authenticationEntryPoint(spnegoEntryPoint())
+                    .accessDeniedHandler { request, response, _ ->
+                        if ("/login".equals(request.requestURI, true)) response.sendRedirect("/")
+                    }
                 .and()
                 .authorizeRequests()
-                    .antMatchers("/login").permitAll()
+                    .antMatchers("/login").not().authenticated()
                     .antMatchers("/assets/**").permitAll()
                     .anyRequest().authenticated()
                 .and()
                 .csrf().disable()
                 .formLogin()
-                    .loginPage("/login").permitAll()
-                    .defaultSuccessUrl("/", false)
+                    .loginPage("/login")
+                    .defaultSuccessUrl("/", true)
                 .and()
                 .logout()
                     .logoutUrl("/logout")

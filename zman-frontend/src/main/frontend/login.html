@@ -63,12 +63,13 @@
     <div class="content-wrapper">
         <div class="container">
 
-            <form class="form-signin" action="login" method='POST'>
+            <form id="auth-form" class="form-signin" action="login" method='POST'>
                 <h2 class="form-signin-heading" align="center">Please sign in</h2>
                 <label class="sr-only">Username</label>
                 <input type="text" name="username" class="form-control" placeholder="Username" required autofocus>
                 <label class="sr-only">Password</label>
                 <input type="password" name="password" class="form-control" placeholder="Password" required>
+                <div id="error" class = "alert alert-danger" style="display: none"></div>
                 <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
             </form>
 
@@ -80,5 +81,15 @@
         ООО «ПС РнД» Egor Lepa egor.lepa@billing.ru, Kirill Saksin kirill.saksin@billing.ru
     </footer>
 </div>
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        var form = document.getElementById('auth-form');
+        form.action = form.action + window.location.hash;
 
+        if (window.location.search === "?error"){
+            document.getElementById("error").style.display = "block";
+            document.getElementById("error").innerText="Incorrect username or password";
+        }
+    });
+</script>
 </html>
