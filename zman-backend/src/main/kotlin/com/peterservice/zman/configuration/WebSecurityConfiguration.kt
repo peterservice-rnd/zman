@@ -30,14 +30,14 @@ open class WebSecurityConfiguration : WebSecurityConfigurerAdapter() {
     override fun configure(http: HttpSecurity) {
         http
             .authorizeRequests()
-                .antMatchers("/login").permitAll()
+                .antMatchers("/login").not().authenticated()
                 .antMatchers("/assets/**").permitAll()
                 .anyRequest().authenticated()
             .and()
             .csrf().disable()
             .formLogin()
                 .loginPage("/login")
-                .defaultSuccessUrl("/", false)
+                .defaultSuccessUrl("/", true)
             .and()
             .logout()
                 .logoutUrl("/logout")
@@ -46,6 +46,12 @@ open class WebSecurityConfiguration : WebSecurityConfigurerAdapter() {
             .and()
             .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // явное включение сессии
+            .and()
+                .exceptionHandling()
+                .accessDeniedHandler { request, response, _ ->
+                    if ("/login".equals(request.requestURI, true)) response.sendRedirect("/")
+                }
+
     }
 
     @Bean
