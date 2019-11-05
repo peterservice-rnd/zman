@@ -36,17 +36,14 @@
                     server.getConnection().get({path: node.znodeName}, function (response) {
                         node.children = response.children;
                         nodeUnitOfWork.markClean(node);
-                    }, function() {
-                        reject();
+                    }, function(reason) {
+                        reject(reason);
                     });
-                } else {
-                    setTimeout(function () {
-                        resolve();
-                    }, 100);
                 }
-                setTimeout(function () {
-                    resolve();
-                }, 100);
+                else {
+                    setTimeout(function () {resolve();}, 100);
+                }
+                setTimeout(function () {resolve();}, 100);
             });
             return node.childrenPromise;
         };

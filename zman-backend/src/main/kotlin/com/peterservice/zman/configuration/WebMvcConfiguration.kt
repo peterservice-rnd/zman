@@ -33,11 +33,12 @@ open class WebMvcConfiguration : WebMvcConfigurerAdapter() {
     override fun configureContentNegotiation(configurer: ContentNegotiationConfigurer) {
         with(configurer) {
             favorPathExtension(false)
-            ignoreAcceptHeader(true)
             favorParameter(true)
+            ignoreAcceptHeader(false)
+            useJaf(false)
             defaultContentType(MediaType.APPLICATION_JSON)
-            mediaType("json", MediaType.APPLICATION_JSON)
             mediaType("xml", MediaType.APPLICATION_XML)
+            mediaType("json", MediaType.APPLICATION_JSON)
         }
     }
 

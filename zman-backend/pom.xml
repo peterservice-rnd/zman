@@ -12,6 +12,8 @@
     <properties>
         <spring-test.ldap.version>2.3.1.RELEASE</spring-test.ldap.version>
         <commons.pool.version>1.6</commons.pool.version>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
     </properties>
 
     <artifactId>zman-backend</artifactId>

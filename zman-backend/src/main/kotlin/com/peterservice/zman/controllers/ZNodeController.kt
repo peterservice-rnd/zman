@@ -7,6 +7,7 @@ import com.peterservice.zman.api.repositories.AliasRepository
 import com.peterservice.zman.api.zookeeper.ZookeeperService
 import com.peterservice.zman.api.zookeeper.ZookeeperServiceManager
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
@@ -29,27 +30,25 @@ class ZNodeController {
     fun getZNode(@PathVariable alias: String,
                  @RequestAttribute zpath: String,
                  @RequestParam(defaultValue = "false") export: Boolean,
-                 @RequestParam(defaultValue = "json") format: String,
                  @AuthenticationPrincipal principal: Principal?,
                  response: HttpServletResponse): ZNode {
         val zookeeperService = getService(alias)
 
         if (export) {
-            addAttachmentHeader(response, buildFilename(alias, zpath, format))
+            addAttachmentHeader(response, buildFilename(alias, zpath))
             return zookeeperService.readZNode(zpath, recursive = true, user = principal?.name)
         }
 
         return zookeeperService.readZNode(zpath, recursive = false, user = principal?.name)
     }
 
-    private fun buildFilename(alias: String, zpath: String, format: String): String {
-        val filename = zpath.substringAfterLast('/').takeIf(String::isNotBlank) ?: alias
-        return "$filename.$format"
+    private fun buildFilename(alias: String, zpath: String): String {
+        return zpath.substringAfterLast('/').takeIf(String::isNotBlank) ?: alias
     }
 
     private fun addAttachmentHeader(response: HttpServletResponse, filename: String) {
         response.addHeader(
-                "Content-Disposition",
+                HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=$filename"
         )
     }

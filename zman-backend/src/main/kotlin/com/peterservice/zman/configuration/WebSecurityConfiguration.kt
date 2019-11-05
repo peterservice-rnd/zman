@@ -2,6 +2,7 @@ package com.peterservice.zman.configuration
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
+import org.springframework.boot.autoconfigure.security.Http401AuthenticationEntryPoint
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationProvider
@@ -11,8 +12,10 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.firewall.DefaultHttpFirewall
 import org.springframework.security.web.firewall.HttpFirewall
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import javax.validation.constraints.NotNull
 
 
@@ -48,10 +51,15 @@ open class WebSecurityConfiguration : WebSecurityConfigurerAdapter() {
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // явное включение сессии
             .and()
                 .exceptionHandling()
+                .defaultAuthenticationEntryPointFor(getRestAuthenticationEntryPoint(), AntPathRequestMatcher("/api/**"))
                 .accessDeniedHandler { request, response, _ ->
                     if ("/login".equals(request.requestURI, true)) response.sendRedirect("/")
                 }
+    }
 
+    @Bean
+    open fun getRestAuthenticationEntryPoint(): AuthenticationEntryPoint {
+        return Http401AuthenticationEntryPoint("UNAUTHORIZED")
     }
 
     @Bean

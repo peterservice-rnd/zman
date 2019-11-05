@@ -26,7 +26,9 @@ zman:
 
 authentication:
   type: NONE
-
+server:
+  session:
+    timeout: 1200
 #  ad:
 #    domain: "operator.ru"
 #    url: "ldap://dc.operator.ru/"

@@ -3,6 +3,29 @@
     angular.module('server', ['ngResource', 'util.services'])
         .service('serverConnection', ServerConnection);
 
+    angular.module('server')
+        .config(['$httpProvider', function ($httpProvider) {
+            $httpProvider.interceptors.push(function(){
+                return {
+                    response: function(response) {
+                        return response;
+                    },
+                    responseError: function(rejection) {
+                        if (rejection.status === 401) {
+                            alert("Session expired! Return on login form!");
+                            window.location.reload();
+                            throw new Error(rejection.statusText);
+                        }
+                        if (rejection.status === 500) {
+                            alert("Error!");
+                            throw new Error(rejection.statusText);
+                        }
+                        return rejection;
+                    }
+                }
+            });
+        }]);
+
     ServerConnection.$inject = ['$resource', 'url'];
     function ServerConnection($resource, url) {
         var alias = null;
