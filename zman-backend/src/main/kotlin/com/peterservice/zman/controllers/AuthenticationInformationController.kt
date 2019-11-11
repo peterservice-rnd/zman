@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest
 class AuthenticationInformationController {
     @GetMapping("/authentication")
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     fun authentication(request: HttpServletRequest): Authentication {
         if (request.userPrincipal == null) {
             return Authentication(false)

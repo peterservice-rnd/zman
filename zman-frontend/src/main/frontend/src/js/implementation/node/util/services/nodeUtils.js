@@ -20,7 +20,11 @@
             var root = finder.find('/');
             return $q(function(resolve, reject) {
                 uow.markDirty(root);
-                storage.loadChildren(root).then(resolve()).catch(reject());
+                storage.loadChildren(root).then(function(greeting) {
+                    resolve();
+                }, function(reason) {
+                    reject(reason);
+                });
             });
         };
 

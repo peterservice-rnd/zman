@@ -38,14 +38,14 @@
             if(modelStorage.has('edit') && treeHandler.isSet()) {
                 var node = editStorage.getNode();
                 node.znodeValue = modelStorage.get('edit');
+                toast.loading('Changing znode value...');
                 server.getConnection().update({path: node.znodeName}, node, function() {
                     nodeUtils.softRefresh(node);
                     modelStorage.set('edit-modal', 'refresh');
                     toast.success('New value successfully saved');
                 }, function (resp) {
-                    toast.error(resp.data.body);
+                    toast.error(resp.message);
                 });
-                toast.loading('Changing znode value...');
             }
         };
 
@@ -90,9 +90,12 @@
 
         this.forceRefresh = function () {
             toast.loading('Refreshing...');
-            nodeUtils.forceRefresh().then(function () {
-                toast.success('Refreshed');
-            });
+            nodeUtils.forceRefresh().then(
+                function() {
+                    toast.success('Refreshed');
+                }).catch(function(reason) {
+                    toast.error(reason);
+                });
         };
     }
 }(window.angular));

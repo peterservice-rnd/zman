@@ -3,6 +3,7 @@ package com.peterservice.zman.configuration
 import org.hibernate.validator.constraints.NotEmpty
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
+import org.springframework.boot.autoconfigure.security.Http401AuthenticationEntryPoint
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -18,11 +19,11 @@ import org.springframework.security.kerberos.authentication.sun.SunJaasKerberosC
 import org.springframework.security.kerberos.authentication.sun.SunJaasKerberosTicketValidator
 import org.springframework.security.kerberos.web.authentication.SpnegoAuthenticationProcessingFilter
 import org.springframework.security.kerberos.web.authentication.SpnegoEntryPoint
+import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 import org.springframework.security.web.firewall.DefaultHttpFirewall
 import org.springframework.security.web.firewall.HttpFirewall
-
-
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 
 
 @ConditionalOnExpression("'\${authentication.type}' == 'KERBEROS'")
@@ -45,6 +46,7 @@ open class WebSecurityKerberosConfiguration : WebSecurityConfigurerAdapter() {
         http
                 .exceptionHandling()
                     .authenticationEntryPoint(spnegoEntryPoint())
+                    .defaultAuthenticationEntryPointFor(getRestAuthenticationEntryPoint(), AntPathRequestMatcher("/api/**"))
                     .accessDeniedHandler { request, response, _ ->
                         if ("/login".equals(request.requestURI, true)) response.sendRedirect("/")
                     }
@@ -67,6 +69,11 @@ open class WebSecurityKerberosConfiguration : WebSecurityConfigurerAdapter() {
                 .addFilterBefore(
                         spnegoAuthenticationProcessingFilter(),
                         BasicAuthenticationFilter::class.java)
+    }
+
+    @Bean
+    open fun getRestAuthenticationEntryPoint(): AuthenticationEntryPoint {
+        return Http401AuthenticationEntryPoint("UNAUTHORIZED")
     }
 
     //@Bean
