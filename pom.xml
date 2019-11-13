@@ -6,7 +6,7 @@
 
     <groupId>com.peterservice.zman</groupId>
     <artifactId>ccm-zman</artifactId>
-    <version>1.0.4-SNAPSHOT</version>
+    <version>1.0.4</version>
     <modules>
         <module>zman-frontend</module>
         <module>zman-backend</module>
